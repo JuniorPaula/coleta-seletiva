@@ -4,11 +4,11 @@ import { HttpRequest, HttpResponse } from '../protocols/http'
 
 export class ItemController {
   handle (httpRequest: HttpRequest): HttpResponse {
-    if (!httpRequest.body.title) {
-      return badRequest(new MissingParamError('title'))
-    }
-    if (!httpRequest.body.image) {
-      return badRequest(new MissingParamError('image'))
+    const requiredFields = ['title', 'image']
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field]) {
+        return badRequest(new MissingParamError(field))
+      }
     }
   }
 }
