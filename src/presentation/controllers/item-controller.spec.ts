@@ -1,3 +1,4 @@
+import { MissingParamError } from '../errors/missing-param-error'
 import { ItemController } from './item-controller'
 
 describe('Item Controller', () => {
@@ -10,7 +11,7 @@ describe('Item Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: title'))
+    expect(httpResponse.body).toEqual(new MissingParamError('title'))
   })
 
   test('Should return 400 if no image is provided', async () => {
@@ -22,6 +23,6 @@ describe('Item Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: image'))
+    expect(httpResponse.body).toEqual(new MissingParamError('image'))
   })
 })

@@ -1,3 +1,4 @@
+import { MissingParamError } from '../errors/missing-param-error'
 import { HttpRequest, HttpResponse } from '../protocols/http'
 
 export class ItemController {
@@ -5,13 +6,13 @@ export class ItemController {
     if (!httpRequest.body.title) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: title')
+        body: new MissingParamError('title')
       }
     }
     if (!httpRequest.body.image) {
       return {
         statusCode: 400,
-        body: new Error('Missing param: image')
+        body: new MissingParamError('image')
       }
     }
   }
