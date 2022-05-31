@@ -4,8 +4,8 @@
   "description": "API Colela Seletiva de Lixo",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "test:staged": "jest",
+    "test": "jest --passWithNoTests",
+    "test:staged": "jest --passWithNoTests",
     "prepare": "husky install"
   },
   "author": "Junior Paula",
