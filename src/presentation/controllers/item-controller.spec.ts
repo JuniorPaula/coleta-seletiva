@@ -1,9 +1,13 @@
 import { MissingParamError } from '../errors/missing-param-error'
 import { ItemController } from './item-controller'
 
+const makeSut = (): ItemController => {
+  return new ItemController()
+}
+
 describe('Item Controller', () => {
   test('Should return 400 if no title is provided', async () => {
-    const sut = new ItemController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         image: 'any_image'
@@ -15,7 +19,7 @@ describe('Item Controller', () => {
   })
 
   test('Should return 400 if no image is provided', async () => {
-    const sut = new ItemController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         title: 'any_title'
