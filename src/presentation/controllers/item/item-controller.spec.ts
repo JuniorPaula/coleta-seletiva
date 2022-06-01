@@ -4,13 +4,13 @@ import { AddItem, AddItemModel, ItemModel } from './item-protocols'
 
 const makeAddItem = (): AddItem => {
   class AddItemStub implements AddItem {
-    add (item: AddItemModel): ItemModel {
+    async add (item: AddItemModel): Promise<ItemModel> {
       const fakeItem = {
         id: 'valid_id',
         title: 'valid_title',
         image: 'valid_image'
       }
-      return fakeItem
+      return await new Promise(resolve => resolve(fakeItem))
     }
   }
   return new AddItemStub()
@@ -38,7 +38,7 @@ describe('Item Controller', () => {
         image: 'any_image'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('title'))
   })
@@ -50,7 +50,7 @@ describe('Item Controller', () => {
         title: 'any_title'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('image'))
   })
@@ -64,7 +64,7 @@ describe('Item Controller', () => {
         image: 'any_image'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(addSpy).toHaveBeenCalledWith({
       title: 'any_title',
       image: 'any_image'
@@ -73,8 +73,8 @@ describe('Item Controller', () => {
 
   test('Should return 500 if AddItem throws', async () => {
     const { sut, addItemStub } = makeSut()
-    jest.spyOn(addItemStub, 'add').mockImplementationOnce(() => {
-      throw new Error()
+    jest.spyOn(addItemStub, 'add').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
     })
     const httpRequest = {
       body: {
@@ -82,7 +82,7 @@ describe('Item Controller', () => {
         image: 'any_image'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
@@ -95,7 +95,7 @@ describe('Item Controller', () => {
         image: 'valid_image'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
       id: 'valid_id',

@@ -10,7 +10,7 @@ import {
 export class ItemController implements Controller {
   constructor (private readonly addItem: AddItem) {}
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = ['title', 'image']
       for (const field of requiredFields) {
@@ -19,7 +19,7 @@ export class ItemController implements Controller {
         }
       }
       const { title, image } = httpRequest.body
-      const item = this.addItem.add({
+      const item = await this.addItem.add({
         title,
         image
       })

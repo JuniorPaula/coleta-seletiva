@@ -6,5 +6,5 @@ export interface AddItemModel {
 }
 
 export interface AddItem {
-  add: (item: AddItemModel) => ItemModel
+  add: (item: AddItemModel) => Promise<ItemModel>
 }
