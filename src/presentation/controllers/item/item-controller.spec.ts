@@ -1,5 +1,5 @@
 import { ItemController } from './item-controller'
-import { MissingParamError } from '../../errors/missing-param-error'
+import { MissingParamError, ServerError } from '../../errors'
 import { AddItem, AddItemModel, ItemModel } from './item-protocols'
 
 const makeAddItem = (): AddItem => {
@@ -69,5 +69,21 @@ describe('Item Controller', () => {
       title: 'any_title',
       image: 'any_image'
     })
+  })
+
+  test('Should return 500 if AddItem throws', async () => {
+    const { sut, addItemStub } = makeSut()
+    jest.spyOn(addItemStub, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpRequest = {
+      body: {
+        title: 'any_title',
+        image: 'any_image'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
