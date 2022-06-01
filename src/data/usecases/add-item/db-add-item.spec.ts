@@ -47,4 +47,19 @@ describe('DB AddItem usecase', () => {
       image: 'valid_image'
     })
   })
+
+  test('Should throw if AddItemRepository throws', async () => {
+    const { sut, addItemRepositoryStub } = makeSut()
+    jest.spyOn(addItemRepositoryStub, 'add').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+
+    const itemData = {
+      title: 'valid_title',
+      image: 'valid_image'
+    }
+
+    const promise = sut.add(itemData)
+    await expect(promise).rejects.toThrow()
+  })
 })
