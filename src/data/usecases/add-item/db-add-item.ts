@@ -6,7 +6,7 @@ export class DbAddItem implements AddItem {
   constructor (private readonly addItemRepository: AddItemRepository) {}
 
   async add (itemData: AddItemModel): Promise<ItemModel> {
-    await this.addItemRepository.add(itemData)
-    return await new Promise(resolve => resolve(null))
+    const item = await this.addItemRepository.add(itemData)
+    return item
   }
 }
