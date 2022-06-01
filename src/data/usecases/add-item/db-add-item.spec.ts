@@ -62,4 +62,19 @@ describe('DB AddItem usecase', () => {
     const promise = sut.add(itemData)
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should returns an item on success', async () => {
+    const { sut } = makeSut()
+    const itemData = {
+      title: 'valid_title',
+      image: 'valid_image'
+    }
+
+    const item = await sut.add(itemData)
+    expect(item).toEqual({
+      id: 'valid_id',
+      title: 'valid_title',
+      image: 'valid_image'
+    })
+  })
 })
