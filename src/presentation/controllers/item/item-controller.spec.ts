@@ -1,7 +1,6 @@
-import { ItemModel } from '../../domain/model/item-model'
-import { AddItem, AddItemModel } from '../../domain/usecase/add-item'
-import { MissingParamError } from '../errors/missing-param-error'
 import { ItemController } from './item-controller'
+import { MissingParamError } from '../../errors/missing-param-error'
+import { AddItem, AddItemModel, ItemModel } from './item-protocols'
 
 const makeAddItem = (): AddItem => {
   class AddItemStub implements AddItem {

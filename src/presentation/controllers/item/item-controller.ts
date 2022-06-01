@@ -1,8 +1,11 @@
-import { AddItem } from '../../domain/usecase/add-item'
-import { MissingParamError } from '../errors/missing-param-error'
-import { badRequest } from '../helpers/http-helpers'
-import { Controller } from '../protocols/controller'
-import { HttpRequest, HttpResponse } from '../protocols/http'
+import { MissingParamError } from '../../errors/missing-param-error'
+import { badRequest } from '../../helpers/http-helpers'
+import {
+  HttpRequest,
+  HttpResponse,
+  AddItem,
+  Controller
+} from './item-protocols'
 
 export class ItemController implements Controller {
   constructor (private readonly addItem: AddItem) {}
