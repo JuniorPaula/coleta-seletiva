@@ -1,4 +1,4 @@
-import { serverError } from '../../helpers/http-helpers'
+import { ok, serverError } from '../../helpers/http-helpers'
 import { HttpResponse } from '../../protocols'
 import { Controller, GetItem } from './item-protocols'
 
@@ -7,10 +7,7 @@ export class GetItemsController implements Controller {
   async handle (): Promise<HttpResponse> {
     try {
       const items = await this.getItem.get()
-      return {
-        statusCode: 200,
-        body: items
-      }
+      return ok(items)
     } catch (error) {
       return serverError()
     }
