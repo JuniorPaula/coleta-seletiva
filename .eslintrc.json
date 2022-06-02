@@ -7,6 +7,7 @@
     "@typescript-eslint/strict-boolean-expressions": 0,
     "@typescript-eslint/no-extraneous-class": 0,
     "@typescript-eslint/no-namespace": 0,
-    "promise/param-names": 0
+    "promise/param-names": 0,
+    "@typescript-eslint/no-misused-promises": 0
   }
 }
