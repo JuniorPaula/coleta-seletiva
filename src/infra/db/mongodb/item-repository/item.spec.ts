@@ -1,5 +1,10 @@
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ItemMongoRepository } from './item'
+
+const makeSut = (): ItemMongoRepository => {
+  return new ItemMongoRepository()
+}
+
 describe('Item Mongo Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
@@ -10,7 +15,7 @@ describe('Item Mongo Repository', () => {
   })
 
   test('Should return an item on success', async () => {
-    const sut = new ItemMongoRepository()
+    const sut = makeSut()
     const item = await sut.add({
       title: 'any_title',
       image: 'any_image'
