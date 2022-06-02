@@ -2,22 +2,25 @@ import { ServerError } from '../../errors'
 import { GetItemsController } from './get-item-controller'
 import { ItemModel, GetItem } from './item-protocols'
 
+const makeFakeItems = (): ItemModel[] => {
+  return [
+    {
+      id: 'any_id',
+      title: 'any_title',
+      image: 'any_image'
+    },
+    {
+      id: 'another_id',
+      title: 'another_title',
+      image: 'another_image'
+    }
+  ]
+}
+
 const makeGetItem = (): GetItem => {
   class GetItemStub implements GetItem {
     async get (): Promise<ItemModel[]> {
-      const fakeItems = [
-        {
-          id: 'any_id',
-          title: 'any_title',
-          image: 'any_image'
-        },
-        {
-          id: 'another_id',
-          title: 'another_title',
-          image: 'another_image'
-        }
-      ]
-      return await new Promise(resolve => resolve(fakeItems))
+      return await new Promise(resolve => resolve(makeFakeItems()))
     }
   }
 
@@ -58,21 +61,8 @@ describe('Get Items Controllers', () => {
 
   test('Should returns 200 if GetItem return on success', async () => {
     const { sut } = makeSut()
-
-    const fakeItems = [
-      {
-        id: 'any_id',
-        title: 'any_title',
-        image: 'any_image'
-      },
-      {
-        id: 'another_id',
-        title: 'another_title',
-        image: 'another_image'
-      }
-    ]
     const httpResponse = await sut.handle()
     expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual(fakeItems)
+    expect(httpResponse.body).toEqual(makeFakeItems())
   })
 })
