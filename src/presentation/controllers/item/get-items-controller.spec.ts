@@ -55,4 +55,24 @@ describe('Get Items Controllers', () => {
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
+
+  test('Should returns 200 if GetItem return on success', async () => {
+    const { sut } = makeSut()
+
+    const fakeItems = [
+      {
+        id: 'any_id',
+        title: 'any_title',
+        image: 'any_image'
+      },
+      {
+        id: 'another_id',
+        title: 'another_title',
+        image: 'another_image'
+      }
+    ]
+    const httpResponse = await sut.handle()
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(fakeItems)
+  })
 })
