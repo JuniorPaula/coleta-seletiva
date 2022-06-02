@@ -14,6 +14,11 @@ describe('Item Mongo Repository', () => {
     await MongoHelper.disconnect()
   })
 
+  beforeEach(async () => {
+    const itemColletion = MongoHelper.getCollection('items')
+    await itemColletion.deleteMany({})
+  })
+
   test('Should return an item on success', async () => {
     const sut = makeSut()
     const item = await sut.add({
