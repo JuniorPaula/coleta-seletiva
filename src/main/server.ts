@@ -1,4 +1,3 @@
-import express from 'express'
+import { app } from './config/app'
 
-const app = express()
 app.listen(3035, () => console.info('[+] Server is running'))
