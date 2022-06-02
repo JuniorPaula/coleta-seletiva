@@ -1,3 +1,4 @@
+import { ServerError } from '../../errors'
 import { GetItemsController } from './get-item-controller'
 import { ItemModel, GetItem } from './item-protocols'
 
@@ -25,23 +26,33 @@ const makeGetItem = (): GetItem => {
 
 interface SutTypes {
   sut: GetItemsController
-  getItem: GetItem
+  getItemstub: GetItem
 }
 
 const makeSut = (): SutTypes => {
-  const getItem = makeGetItem()
-  const sut = new GetItemsController(getItem)
+  const getItemstub = makeGetItem()
+  const sut = new GetItemsController(getItemstub)
   return {
     sut,
-    getItem
+    getItemstub
   }
 }
 
 describe('Get Items Controllers', () => {
   test('Should calls Getitem once time', async () => {
-    const { sut, getItem } = makeSut()
-    const itemsSpy = jest.spyOn(getItem, 'get')
+    const { sut, getItemstub } = makeSut()
+    const itemsSpy = jest.spyOn(getItemstub, 'get')
     await sut.handle()
     expect(itemsSpy).toBeCalledTimes(1)
+  })
+
+  test('Should return 500 if GetItem throws', async () => {
+    const { sut, getItemstub } = makeSut()
+    jest.spyOn(getItemstub, 'get').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
+    })
+    const httpResponse = await sut.handle()
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
