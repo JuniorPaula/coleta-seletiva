@@ -58,4 +58,10 @@ describe('Db Get Item', () => {
     const promise = sut.get()
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should returns items DbGetItem return on success', async () => {
+    const { sut } = makeSut()
+    const items = await sut.get()
+    expect(items).toEqual(makeFakeItems())
+  })
 })
