@@ -52,4 +52,22 @@ describe('Item Mongo Repository', () => {
 
     expect(items).toHaveLength(2)
   })
+
+  test('Should return items with correct url image', async () => {
+    const sut = makeSut()
+    await itemColletion.insertMany([
+      {
+        title: 'any_title',
+        image: 'any_image.png'
+      },
+      {
+        title: 'another_title',
+        image: 'another_image.png'
+      }
+    ])
+
+    const items = await sut.get()
+    const image_url = items.find(item => item.image)
+    expect(image_url.image).toEqual('http://localhost:3035/api/any_image.png')
+  })
 })
