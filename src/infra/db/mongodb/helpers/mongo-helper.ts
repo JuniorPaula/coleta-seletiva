@@ -25,5 +25,15 @@ export const MongoHelper = {
 
   mapColletion (collection: any[]): any[] {
     return collection.map(c => MongoHelper.map(c))
+  },
+
+  collectionSerialized (collection: any[]): any[] {
+    return collection.map(item => {
+      return {
+        _id: item.id,
+        title: item.title,
+        image: `http://localhost:3035/api/${item.image}`
+      }
+    })
   }
 }

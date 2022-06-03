@@ -8,13 +8,12 @@ export class ItemMongoRepository implements AddItemRepository, GetItemRepository
   async add (itemData: AddItemModel): Promise<ItemModel> {
     const itemColletion = MongoHelper.getCollection('items')
     const result = await itemColletion.insertOne(itemData)
-
     return MongoHelper.map(result.ops[0])
   }
 
   async get (): Promise<ItemModel[]> {
     const itemColletion = MongoHelper.getCollection('items')
     const result = await itemColletion.find().toArray()
-    return MongoHelper.mapColletion(result)
+    return MongoHelper.collectionSerialized(result)
   }
 }

@@ -8,6 +8,9 @@
     "@typescript-eslint/no-extraneous-class": 0,
     "@typescript-eslint/no-namespace": 0,
     "promise/param-names": 0,
-    "@typescript-eslint/no-misused-promises": 0
+    "@typescript-eslint/no-misused-promises": 0,
+    "@typescript-eslint/no-unused-expressions": 0,
+    "@typescript-eslint/naming-convention": 0,
+    "@typescript-eslint/restrict-template-expressions": 0
   }
 }
