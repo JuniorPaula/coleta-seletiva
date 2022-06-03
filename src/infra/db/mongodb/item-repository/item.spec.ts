@@ -1,5 +1,8 @@
+import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ItemMongoRepository } from './item'
+
+let itemColletion: Collection
 
 const makeSut = (): ItemMongoRepository => {
   return new ItemMongoRepository()
@@ -15,7 +18,7 @@ describe('Item Mongo Repository', () => {
   })
 
   beforeEach(async () => {
-    const itemColletion = MongoHelper.getCollection('items')
+    itemColletion = MongoHelper.getCollection('items')
     await itemColletion.deleteMany({})
   })
 
@@ -30,5 +33,23 @@ describe('Item Mongo Repository', () => {
     expect(item.id).toBeTruthy()
     expect(item.title).toBe('any_title')
     expect(item.image).toBe('any_image')
+  })
+
+  test('Should return a colletions of the items on success', async () => {
+    const sut = makeSut()
+    await itemColletion.insertMany([
+      {
+        title: 'any_title',
+        image: 'any_image'
+      },
+      {
+        title: 'another_title',
+        image: 'another_image'
+      }
+    ])
+
+    const items = await sut.get()
+
+    expect(items).toHaveLength(2)
   })
 })
