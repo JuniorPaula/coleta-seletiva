@@ -49,4 +49,13 @@ describe('Db Get Item', () => {
     await sut.get()
     expect(getSpy).toHaveBeenCalled()
   })
+
+  test('Should throw if GetItemRepository throws', async () => {
+    const { sut, getItemRepositoryStub } = makeSut()
+    jest.spyOn(getItemRepositoryStub, 'get').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+    const promise = sut.get()
+    await expect(promise).rejects.toThrow()
+  })
 })
