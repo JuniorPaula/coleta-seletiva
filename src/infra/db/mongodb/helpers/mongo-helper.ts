@@ -30,7 +30,7 @@ export const MongoHelper = {
   collectionSerialized (collection: any[]): any[] {
     return collection.map(item => {
       return {
-        _id: item.id,
+        id: item._id,
         title: item.title,
         image: `http://localhost:3035/api/${item.image}`
       }

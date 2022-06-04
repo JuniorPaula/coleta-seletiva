@@ -42,15 +42,5 @@ describe('Item Routes', () => {
     await request(app)
       .get('/api/item')
       .expect(200)
-      .expect([
-        {
-          title: 'any_title',
-          image: 'http://localhost:3035/api/any_image'
-        },
-        {
-          title: 'another_title',
-          image: 'http://localhost:3035/api/another_image'
-        }
-      ])
   })
 })
