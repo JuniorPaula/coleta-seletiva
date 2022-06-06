@@ -68,6 +68,6 @@ describe('Item Mongo Repository', () => {
 
     const items = await sut.get()
     const image_url = items.find(item => item.image)
-    expect(image_url.image).toEqual('http://localhost:3035/api/any_image.png')
+    expect(image_url.image).toEqual('http://localhost:3035/static/any_image.png')
   })
 })

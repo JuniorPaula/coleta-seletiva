@@ -32,7 +32,7 @@ export const MongoHelper = {
       return {
         id: item._id,
         title: item.title,
-        image: `http://localhost:3035/api/${item.image}`
+        image: `http://localhost:3035/static/${item.image}`
       }
     })
   }
