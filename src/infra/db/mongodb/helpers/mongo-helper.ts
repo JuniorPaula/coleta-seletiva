@@ -31,7 +31,7 @@ export const MongoHelper = {
       return {
         id: item._id,
         title: item.title,
-        image: `${this.baseUrl}/api/v1/static/${item.image}`
+        image: `${this.baseUrl}/static/img/${item.image}`
       }
     })
   }
