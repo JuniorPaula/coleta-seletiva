@@ -4,7 +4,8 @@
   "description": "API Colela Seletiva de Lixo",
   "main": "index.js",
   "scripts": {
-    "dev": "sucrase-node src/main/server.ts",
+    "dev": "ts-node-dev --inspect --ignore-watch node_modules src/main/server.ts",
+    "check": "npm-check -s -u",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- -c jest-unit-config.js",
@@ -16,11 +17,11 @@
   "author": "Junior Paula",
   "license": "MIT",
   "devDependencies": {
-    "@shelf/jest-mongodb": "^1.1.3",
+    "@shelf/jest-mongodb": "^3.0.2",
     "@types/express": "^4.17.13",
-    "@types/jest": "^27.4.1",
-    "@types/mongodb": "^3.3.14",
-    "@types/node": "^17.0.24",
+    "@types/jest": "^28.1.5",
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^18.0.4",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "eslint": "^7.32.0",
@@ -29,17 +30,20 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
     "git-commit-msg-linter": "^4.1.1",
-    "husky": "^7.0.4",
-    "jest": "^27.5.1",
+    "husky": "^8.0.1",
+    "jest": "^28.1.3",
     "lint-staged": "^12.3.8",
     "sucrase": "^3.21.0",
     "supertest": "^6.2.3",
-    "ts-jest": "^27.1.4",
+    "ts-jest": "^28.0.6",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "fast-glob": "^3.2.11",
-    "mongodb": "^3.5.1"
+    "mongodb": "^4.8.0",
+    "npm-check": "^4.1.4"
   }
 }

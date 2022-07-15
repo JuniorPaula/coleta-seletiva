@@ -1,5 +1,5 @@
 import { MissingParamError } from '../../errors/missing-param-error'
-import { badRequest, ok, serverError } from '../../helpers/http-helpers'
+import { badRequest, noContent, serverError } from '../../helpers/http-helpers'
 import {
   HttpRequest,
   HttpResponse,
@@ -19,11 +19,11 @@ export class ItemController implements Controller {
         }
       }
       const { title, image } = httpRequest.body
-      const item = await this.addItem.add({
+      await this.addItem.add({
         title,
         image
       })
-      return ok(item)
+      return noContent()
     } catch (error) {
       return serverError()
     }

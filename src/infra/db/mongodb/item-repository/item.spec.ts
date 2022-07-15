@@ -9,6 +9,8 @@ const makeSut = (): ItemMongoRepository => {
 }
 
 describe('Item Mongo Repository', () => {
+  const baseUrl = MongoHelper.baseUrl
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -22,7 +24,7 @@ describe('Item Mongo Repository', () => {
     await itemColletion.deleteMany({})
   })
 
-  test('Should return an item on success', async () => {
+  test('Should save an item on success', async () => {
     const sut = makeSut()
     const item = await sut.add({
       title: 'any_title',
@@ -30,9 +32,6 @@ describe('Item Mongo Repository', () => {
     })
 
     expect(item).toBeTruthy()
-    expect(item.id).toBeTruthy()
-    expect(item.title).toBe('any_title')
-    expect(item.image).toBe('any_image')
   })
 
   test('Should return a colletions of the items on success', async () => {
@@ -49,7 +48,6 @@ describe('Item Mongo Repository', () => {
     ])
 
     const items = await sut.get()
-
     expect(items).toHaveLength(2)
   })
 
@@ -68,6 +66,6 @@ describe('Item Mongo Repository', () => {
 
     const items = await sut.get()
     const image_url = items.find(item => item.image)
-    expect(image_url.image).toEqual('http://localhost:3035/static/any_image.png')
+    expect(image_url.image).toEqual(`${baseUrl}/static/any_image.png`)
   })
 })

@@ -1,16 +1,11 @@
 import { ItemController } from './item-controller'
 import { MissingParamError, ServerError } from '../../errors'
-import { AddItem, AddItemModel, ItemModel } from './item-protocols'
+import { AddItem, AddItemModel } from './item-protocols'
 
 const makeAddItem = (): AddItem => {
   class AddItemStub implements AddItem {
-    async add (item: AddItemModel): Promise<ItemModel> {
-      const fakeItem = {
-        id: 'valid_id',
-        title: 'valid_title',
-        image: 'valid_image'
-      }
-      return await new Promise(resolve => resolve(fakeItem))
+    async add (item: AddItemModel): Promise<string> {
+      return await new Promise(resolve => resolve('any_id'))
     }
   }
   return new AddItemStub()
@@ -87,7 +82,7 @@ describe('Item Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('Should returns 200 if valid data is provided', async () => {
+  test('Should returns 204 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -96,11 +91,6 @@ describe('Item Controller', () => {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual({
-      id: 'valid_id',
-      title: 'valid_title',
-      image: 'valid_image'
-    })
+    expect(httpResponse.statusCode).toBe(204)
   })
 })

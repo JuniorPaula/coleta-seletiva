@@ -1,17 +1,11 @@
-import { ItemModel } from '../../../domain/model/item-model'
 import { AddItemModel } from '../../../domain/usecase/add-item'
 import { AddItemRepository } from '../../protocols/add-item-repository'
 import { DbAddItem } from './db-add-item'
 
 const makeAddItemRepository = (): AddItemRepository => {
   class AddItemRepositoryStub implements AddItemRepository {
-    async add (itemData: AddItemModel): Promise<ItemModel> {
-      const fakeItem = {
-        id: 'valid_id',
-        title: 'valid_title',
-        image: 'valid_image'
-      }
-      return await new Promise(resolve => resolve(fakeItem))
+    async add (itemData: AddItemModel): Promise<string> {
+      return await new Promise(resolve => resolve('any_id'))
     }
   }
 
@@ -63,7 +57,7 @@ describe('DB AddItem usecase', () => {
     await expect(promise).rejects.toThrow()
   })
 
-  test('Should returns an item on success', async () => {
+  test('Should save an item on success', async () => {
     const { sut } = makeSut()
     const itemData = {
       title: 'valid_title',
@@ -71,10 +65,6 @@ describe('DB AddItem usecase', () => {
     }
 
     const item = await sut.add(itemData)
-    expect(item).toEqual({
-      id: 'valid_id',
-      title: 'valid_title',
-      image: 'valid_image'
-    })
+    expect(item).toBeTruthy()
   })
 })

@@ -1,13 +1,12 @@
 import { Collection, MongoClient } from 'mongodb'
+import env from '../../../../main/config/env'
 
 export const MongoHelper = {
   client: null as MongoClient,
+  baseUrl: env.baseUrl,
 
   async connect (url: string): Promise<void> {
-    this.client = await MongoClient.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
+    this.client = await MongoClient.connect(url)
   },
 
   async disconnect (): Promise<void> {
@@ -32,7 +31,7 @@ export const MongoHelper = {
       return {
         id: item._id,
         title: item.title,
-        image: `http://localhost:3035/static/${item.image}`
+        image: `${this.baseUrl}/static/${item.image}`
       }
     })
   }

@@ -18,29 +18,13 @@ describe('Item Routes', () => {
     itemColletion = MongoHelper.getCollection('items')
     await itemColletion.deleteMany({})
   })
-  test('Should return an item on success', async () => {
+  test('Should save an item on success', async () => {
     await request(app)
       .post('/api/item')
       .send({
         title: 'Oléo de cozinha',
         image: 'oleo.png'
       })
-      .expect(200)
-  })
-
-  test('Should return a colletion of items on success', async () => {
-    await itemColletion.insertMany([
-      {
-        title: 'any_title',
-        image: 'any_image'
-      },
-      {
-        title: 'another_title',
-        image: 'another_image'
-      }
-    ])
-    await request(app)
-      .get('/api/item')
-      .expect(200)
+      .expect(204)
   })
 })
