@@ -20,7 +20,7 @@ describe('Item Routes', () => {
   })
   test('Should save an item on success', async () => {
     await request(app)
-      .post('/api/item')
+      .post('/api/v1/item')
       .send({
         title: 'Oléo de cozinha',
         image: 'oleo.png'
