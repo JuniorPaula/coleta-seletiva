@@ -2,6 +2,7 @@ import { ItemController } from './item-controller'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { AddItem, AddItemModel } from './item-protocols'
 import { Validation } from '@/presentation/protocols/validation'
+import { badRequest } from '@/presentation/helpers/http-helpers'
 
 const mockAddItem = (): AddItem => {
   class AddItemStub implements AddItem {
@@ -52,28 +53,17 @@ describe('Item Controller', () => {
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
-  test('Should return 400 if no title is provided', async () => {
-    const { sut } = makeSut()
+  test('Should returns 400 if validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
     const httpRequest = {
       body: {
+        title: 'any_title',
         image: 'any_image'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('title'))
-  })
-
-  test('Should return 400 if no image is provided', async () => {
-    const { sut } = makeSut()
-    const httpRequest = {
-      body: {
-        title: 'any_title'
-      }
-    }
-    const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('image'))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 
   test('Should call AddItem with correct values', async () => {
