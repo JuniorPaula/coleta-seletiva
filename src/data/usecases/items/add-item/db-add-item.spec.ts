@@ -1,5 +1,5 @@
-import { AddItemModel } from '../../../../domain/usecases/items/add-item'
-import { AddItemRepository } from '../../../protocols/items/add-item-repository'
+import { AddItemModel } from '@/domain/usecases/items/add-item'
+import { AddItemRepository } from '@/data/protocols/items/add-item-repository'
 import { DbAddItem } from './db-add-item'
 
 const mockAddItemRepository = (): AddItemRepository => {

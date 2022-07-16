@@ -1,4 +1,4 @@
-import { ServerError } from '../../errors'
+import { ServerError } from '@/presentation/errors'
 import { GetItemsController } from './get-item-controller'
 import { ItemModel, GetItem } from './item-protocols'
 

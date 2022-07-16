@@ -1,5 +1,5 @@
 import { ItemController } from './item-controller'
-import { MissingParamError, ServerError } from '../../errors'
+import { MissingParamError, ServerError } from '@/presentation/errors'
 import { AddItem, AddItemModel } from './item-protocols'
 
 const mockAddItem = (): AddItem => {

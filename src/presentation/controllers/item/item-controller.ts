@@ -1,5 +1,5 @@
-import { MissingParamError } from '../../errors/missing-param-error'
-import { badRequest, noContent, serverError } from '../../helpers/http-helpers'
+import { MissingParamError } from '@/presentation/errors/missing-param-error'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helpers'
 import {
   HttpRequest,
   HttpResponse,

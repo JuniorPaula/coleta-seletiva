@@ -1,5 +1,5 @@
-import { ItemModel } from '../../../../domain/model/item-model'
-import { GetItemRepository } from '../../../protocols/items/get-item-repository'
+import { ItemModel } from '@/domain/model/item-model'
+import { GetItemRepository } from '@/data/protocols/items/get-item-repository'
 import { DbGetItem } from './db-get-item'
 
 const mockFakeItems = (): ItemModel[] => {
