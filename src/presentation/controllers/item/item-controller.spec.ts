@@ -1,6 +1,7 @@
 import { ItemController } from './item-controller'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { AddItem, AddItemModel } from './item-protocols'
+import { Validation } from '@/presentation/protocols/validation'
 
 const mockAddItem = (): AddItem => {
   class AddItemStub implements AddItem {
@@ -11,21 +12,46 @@ const mockAddItem = (): AddItem => {
   return new AddItemStub()
 }
 
+const mockValidation = (): Validation => {
+  class ValidationStub implements Validation {
+    validate (input: any): Error {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTipes = {
   sut: ItemController
   addItemStub: AddItem
+  validationStub: Validation
 }
 
 const makeSut = (): SutTipes => {
   const addItemStub = mockAddItem()
-  const sut = new ItemController(addItemStub)
+  const validationStub = mockValidation()
+  const sut = new ItemController(addItemStub, validationStub)
   return {
     sut,
-    addItemStub
+    addItemStub,
+    validationStub
   }
 }
 
 describe('Item Controller', () => {
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    const httpRequest = {
+      body: {
+        title: 'any_title',
+        image: 'any_image'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
   test('Should return 400 if no title is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
