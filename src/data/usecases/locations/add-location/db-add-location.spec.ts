@@ -97,4 +97,13 @@ describe('Db AddLocation usecase', () => {
     await sut.add(mockLocation())
     expect(locationItemSpy).toHaveBeenCalledWith(mockLocationItem())
   })
+
+  test('Should throw if LocationItemRepository throws', async () => {
+    const { sut, locationItemRepository } = makeSut()
+    jest.spyOn(locationItemRepository, 'create').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+    const promise = sut.add(mockLocation())
+    await expect(promise).rejects.toThrow()
+  })
 })
