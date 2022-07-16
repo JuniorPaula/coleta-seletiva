@@ -6,7 +6,7 @@ export class DbAddLocation implements AddLocation {
   constructor (private readonly addLocationRepository: AddLocationRepository) {}
 
   async add (location: AddLocationModel): Promise<string> {
-    await this.addLocationRepository.add(location)
-    return null
+    const locationId = await this.addLocationRepository.add(location)
+    return locationId
   }
 }
