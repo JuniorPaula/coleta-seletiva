@@ -1,5 +1,5 @@
-import { ItemModel } from '../../../domain/model/item-model'
-import { GetItemRepository } from '../../protocols/get-item-repository'
+import { ItemModel } from '../../../../domain/model/item-model'
+import { GetItemRepository } from '../../../protocols/items/get-item-repository'
 
 export class DbGetItem implements GetItemRepository {
   constructor (private readonly getItemRepository: GetItemRepository) {}

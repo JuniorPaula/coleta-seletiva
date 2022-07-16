@@ -1,8 +1,8 @@
-import { AddItemModel } from '../../../domain/usecase/add-item'
-import { AddItemRepository } from '../../protocols/add-item-repository'
+import { AddItemModel } from '../../../../domain/usecases/items/add-item'
+import { AddItemRepository } from '../../../protocols/items/add-item-repository'
 import { DbAddItem } from './db-add-item'
 
-const makeAddItemRepository = (): AddItemRepository => {
+const mockAddItemRepository = (): AddItemRepository => {
   class AddItemRepositoryStub implements AddItemRepository {
     async add (itemData: AddItemModel): Promise<string> {
       return await new Promise(resolve => resolve('any_id'))
@@ -12,13 +12,13 @@ const makeAddItemRepository = (): AddItemRepository => {
   return new AddItemRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: DbAddItem
   addItemRepositoryStub: AddItemRepository
 }
 
 const makeSut = (): SutTypes => {
-  const addItemRepositoryStub = makeAddItemRepository()
+  const addItemRepositoryStub = mockAddItemRepository()
   const sut = new DbAddItem(addItemRepositoryStub)
   return {
     sut,

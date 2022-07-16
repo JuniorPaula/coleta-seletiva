@@ -1,8 +1,8 @@
-import { ItemModel } from '../../../domain/model/item-model'
-import { GetItemRepository } from '../../protocols/get-item-repository'
+import { ItemModel } from '../../../../domain/model/item-model'
+import { GetItemRepository } from '../../../protocols/items/get-item-repository'
 import { DbGetItem } from './db-get-item'
 
-const makeFakeItems = (): ItemModel[] => {
+const mockFakeItems = (): ItemModel[] => {
   return [
     {
       id: 'any_id',
@@ -17,23 +17,23 @@ const makeFakeItems = (): ItemModel[] => {
   ]
 }
 
-const makeGetItemRepository = (): GetItemRepository => {
+const mockGetItemRepository = (): GetItemRepository => {
   class GetItemRepositoryStub implements GetItemRepository {
     async get (): Promise<ItemModel[]> {
-      return await new Promise(resolve => resolve(makeFakeItems()))
+      return await new Promise(resolve => resolve(mockFakeItems()))
     }
   }
 
   return new GetItemRepositoryStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: DbGetItem
   getItemRepositoryStub: GetItemRepository
 }
 
 const makeSut = (): SutTypes => {
-  const getItemRepositoryStub = makeGetItemRepository()
+  const getItemRepositoryStub = mockGetItemRepository()
   const sut = new DbGetItem(getItemRepositoryStub)
 
   return {
@@ -62,6 +62,6 @@ describe('Db Get Item', () => {
   test('Should returns items DbGetItem return on success', async () => {
     const { sut } = makeSut()
     const items = await sut.get()
-    expect(items).toEqual(makeFakeItems())
+    expect(items).toEqual(mockFakeItems())
   })
 })

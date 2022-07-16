@@ -2,7 +2,7 @@ import { ServerError } from '../../errors'
 import { GetItemsController } from './get-item-controller'
 import { ItemModel, GetItem } from './item-protocols'
 
-const makeFakeItems = (): ItemModel[] => {
+const mockFakeItems = (): ItemModel[] => {
   return [
     {
       id: 'any_id',
@@ -17,23 +17,23 @@ const makeFakeItems = (): ItemModel[] => {
   ]
 }
 
-const makeGetItem = (): GetItem => {
+const mockGetItem = (): GetItem => {
   class GetItemStub implements GetItem {
     async get (): Promise<ItemModel[]> {
-      return await new Promise(resolve => resolve(makeFakeItems()))
+      return await new Promise(resolve => resolve(mockFakeItems()))
     }
   }
 
   return new GetItemStub()
 }
 
-interface SutTypes {
+type SutTypes = {
   sut: GetItemsController
   getItemstub: GetItem
 }
 
 const makeSut = (): SutTypes => {
-  const getItemstub = makeGetItem()
+  const getItemstub = mockGetItem()
   const sut = new GetItemsController(getItemstub)
   return {
     sut,
@@ -63,6 +63,6 @@ describe('Get Items Controllers', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle()
     expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual(makeFakeItems())
+    expect(httpResponse.body).toEqual(mockFakeItems())
   })
 })

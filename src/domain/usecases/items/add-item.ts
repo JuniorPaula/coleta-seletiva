@@ -1,4 +1,4 @@
-export interface AddItemModel {
+export type AddItemModel = {
   title: string
   image: string
 }

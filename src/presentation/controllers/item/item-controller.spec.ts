@@ -2,7 +2,7 @@ import { ItemController } from './item-controller'
 import { MissingParamError, ServerError } from '../../errors'
 import { AddItem, AddItemModel } from './item-protocols'
 
-const makeAddItem = (): AddItem => {
+const mockAddItem = (): AddItem => {
   class AddItemStub implements AddItem {
     async add (item: AddItemModel): Promise<string> {
       return await new Promise(resolve => resolve('any_id'))
@@ -11,13 +11,13 @@ const makeAddItem = (): AddItem => {
   return new AddItemStub()
 }
 
-interface SutTipes {
+type SutTipes = {
   sut: ItemController
   addItemStub: AddItem
 }
 
 const makeSut = (): SutTipes => {
-  const addItemStub = makeAddItem()
+  const addItemStub = mockAddItem()
   const sut = new ItemController(addItemStub)
   return {
     sut,
