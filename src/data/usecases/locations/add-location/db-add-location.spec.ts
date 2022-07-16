@@ -1,5 +1,8 @@
+import { LocationItemRepository } from '@/data/protocols/location-item/location-item-repository'
 import { AddLocationRepository } from '@/data/protocols/locations/add-location-repository'
+import { LocationItemModel } from '@/domain/model/location-item-model'
 import { LocationModel } from '@/domain/model/location-model'
+import { LocationItem } from '@/domain/usecases/location-item/create-location-item'
 import { AddLocation, AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { DbAddLocation } from './db-add-location'
 
@@ -16,27 +19,52 @@ const mockLocation = (): AddLocationModel => ({
   ]
 })
 
+const mockLocationItem = (): LocationItemModel[] => {
+  return [
+    {
+      location_id: 'any_location_id',
+      item_id: 'any_item_id_1'
+    },
+    {
+      location_id: 'any_location_id',
+      item_id: 'any_item_id_2'
+    }
+  ]
+}
+
 const mockAddLocationRepository = (): AddLocationRepository => {
   class AddLocationRepositoryStub implements AddLocationRepository {
     async add (location: LocationModel): Promise<string> {
-      return await new Promise(resolve => resolve('any_id'))
+      return await new Promise(resolve => resolve('any_location_id'))
     }
   }
   return new AddLocationRepositoryStub()
 }
 
+const mockLocationItemRepository = (): LocationItemRepository => {
+  class LocationItemRepositoryStub implements LocationItemRepository {
+    async create (data: LocationItemModel[]): Promise<void> {
+      return await new Promise(resolve => resolve())
+    }
+  }
+  return new LocationItemRepositoryStub()
+}
+
 type SutTypes = {
   sut: DbAddLocation
   addLocationRepository: AddLocation
+  locationItemRepository: LocationItem
 }
 
 const makeSut = (): SutTypes => {
   const addLocationRepository = mockAddLocationRepository()
-  const sut = new DbAddLocation(addLocationRepository)
+  const locationItemRepository = mockLocationItemRepository()
+  const sut = new DbAddLocation(addLocationRepository, locationItemRepository)
 
   return {
     sut,
-    addLocationRepository
+    addLocationRepository,
+    locationItemRepository
   }
 }
 
@@ -61,5 +89,12 @@ describe('Db AddLocation usecase', () => {
     const { sut } = makeSut()
     const locationId = await sut.add(mockLocation())
     expect(locationId).toBeTruthy()
+  })
+
+  test('Should call LocationItemRepository with correct values', async () => {
+    const { sut, locationItemRepository } = makeSut()
+    const locationItemSpy = jest.spyOn(locationItemRepository, 'create')
+    await sut.add(mockLocation())
+    expect(locationItemSpy).toHaveBeenCalledWith(mockLocationItem())
   })
 })
