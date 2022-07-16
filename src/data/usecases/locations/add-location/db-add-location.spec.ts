@@ -1,3 +1,4 @@
+import { AddLocationRepository } from '@/data/protocols/locations/add-location-repository'
 import { LocationModel } from '@/domain/model/location-model'
 import { AddLocation, AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { DbAddLocation } from './db-add-location'
@@ -15,15 +16,33 @@ const mockLocation = (): AddLocationModel => ({
   ]
 })
 
+const mockAddLocationRepository = (): AddLocationRepository => {
+  class AddLocationRepositoryStub implements AddLocationRepository {
+    async add (location: LocationModel): Promise<string> {
+      return await new Promise(resolve => resolve('any_id'))
+    }
+  }
+  return new AddLocationRepositoryStub()
+}
+
+type SutTypes = {
+  sut: DbAddLocation
+  addLocationRepository: AddLocation
+}
+
+const makeSut = (): SutTypes => {
+  const addLocationRepository = mockAddLocationRepository()
+  const sut = new DbAddLocation(addLocationRepository)
+
+  return {
+    sut,
+    addLocationRepository
+  }
+}
+
 describe('Db AddLocation usecase', () => {
   test('Should call AddLocationRepository with correct values', async () => {
-    class AddLocationRepositoryStub implements AddLocation {
-      async add (location: LocationModel): Promise<string> {
-        return await new Promise(resolve => resolve('any_id'))
-      }
-    }
-    const addLocationRepository = new AddLocationRepositoryStub()
-    const sut = new DbAddLocation(addLocationRepository)
+    const { sut, addLocationRepository } = makeSut()
     const locationSpy = jest.spyOn(addLocationRepository, 'add')
     await sut.add(mockLocation())
     expect(locationSpy).toHaveBeenCalledWith(mockLocation())
