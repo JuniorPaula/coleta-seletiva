@@ -56,4 +56,10 @@ describe('Db AddLocation usecase', () => {
     const promise = sut.add(mockLocation())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should save a location on success', async () => {
+    const { sut } = makeSut()
+    const locationId = await sut.add(mockLocation())
+    expect(locationId).toBeTruthy()
+  })
 })
