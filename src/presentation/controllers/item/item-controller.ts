@@ -1,4 +1,3 @@
-import { MissingParamError } from '@/presentation/errors/missing-param-error'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
 import {
@@ -16,12 +15,9 @@ export class ItemController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      this.validation.validate(httpRequest.body)
-      const requiredFields = ['title', 'image']
-      for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
-          return badRequest(new MissingParamError(field))
-        }
+      const error = this.validation.validate(httpRequest.body)
+      if (error) {
+        return badRequest(error)
       }
       const { title, image } = httpRequest.body
       await this.addItem.add({
