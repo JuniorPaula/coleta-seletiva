@@ -1,5 +1,5 @@
 import { AddLocation, AddLocationModel } from '@/domain/usecases/locations/add-location'
-import { MissingParamError } from '@/presentation/errors'
+import { MissingParamError, ServerError } from '@/presentation/errors'
 import { badRequest } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
 import { HttpRequest } from '../item/item-protocols'
@@ -89,5 +89,16 @@ describe('Location Controller', () => {
         'any_item_id_2'
       ]
     })
+  })
+
+  test('Should return 500 if addLocation throws', async () => {
+    const { sut, addLocationStub } = makeSut()
+    jest.spyOn(addLocationStub, 'add').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
+    })
+    const httpRequest = mockFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
