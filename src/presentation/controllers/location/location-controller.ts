@@ -1,5 +1,5 @@
 import { AddLocation } from '@/domain/usecases/locations/add-location'
-import { badRequest } from '@/presentation/helpers/http-helpers'
+import { badRequest, serverError } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
 import { Controller, HttpRequest, HttpResponse } from '../item/item-protocols'
 
@@ -10,24 +10,28 @@ export class LocationController implements Controller {
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const error = this.validation.validate(httpRequest.body)
-    if (error) {
-      return badRequest(error)
-    }
-    const { name, email, latitude, longitude, city, uf, items } = httpRequest.body
-    await this.addLocation.add({
-      name,
-      email,
-      latitude,
-      longitude,
-      city,
-      uf,
-      items
-    })
+    try {
+      const error = this.validation.validate(httpRequest.body)
+      if (error) {
+        return badRequest(error)
+      }
+      const { name, email, latitude, longitude, city, uf, items } = httpRequest.body
+      await this.addLocation.add({
+        name,
+        email,
+        latitude,
+        longitude,
+        city,
+        uf,
+        items
+      })
 
-    return {
-      statusCode: 200,
-      body: null
+      return {
+        statusCode: 200,
+        body: null
+      }
+    } catch (error) {
+      return serverError()
     }
   }
 }
