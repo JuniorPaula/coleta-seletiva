@@ -101,4 +101,11 @@ describe('Location Controller', () => {
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
+
+  test('Should returns 204 if valid data is provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = mockFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(204)
+  })
 })
