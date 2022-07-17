@@ -1,3 +1,4 @@
+import { AddLocation, AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
@@ -19,6 +20,15 @@ const mockFakeRequest = (): HttpRequest => ({
   }
 })
 
+const mockAddLocation = (): AddLocation => {
+  class AddLocationStub implements AddLocation {
+    async add (location: AddLocationModel): Promise<string> {
+      return await new Promise(resolve => resolve('any_locationId'))
+    }
+  }
+  return new AddLocationStub()
+}
+
 const mockValidation = (): Validation => {
   class ValidationStub implements Validation {
     validate (input: any): Error {
@@ -31,14 +41,17 @@ const mockValidation = (): Validation => {
 type SutTipes = {
   sut: LocationController
   validationStub: Validation
+  addLocationStub: AddLocation
 }
 
 const makeSut = (): SutTipes => {
   const validationStub = mockValidation()
-  const sut = new LocationController(validationStub)
+  const addLocationStub = mockAddLocation()
+  const sut = new LocationController(validationStub, addLocationStub)
   return {
     sut,
-    validationStub
+    validationStub,
+    addLocationStub
   }
 }
 
@@ -57,5 +70,24 @@ describe('Location Controller', () => {
     const httpRequest = mockFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
+
+  test('Should call addLocation with correct values', async () => {
+    const { sut, addLocationStub } = makeSut()
+    const addSpy = jest.spyOn(addLocationStub, 'add')
+    const httpRequest = mockFakeRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      latitude: 12345,
+      longitude: 54321,
+      city: 'any_city',
+      uf: 'any_uf',
+      items: [
+        'any_item_id_1',
+        'any_item_id_2'
+      ]
+    })
   })
 })
