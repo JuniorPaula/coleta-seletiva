@@ -1,5 +1,5 @@
 import { AddLocation } from '@/domain/usecases/locations/add-location'
-import { badRequest, serverError } from '@/presentation/helpers/http-helpers'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
 import { Controller, HttpRequest, HttpResponse } from '../item/item-protocols'
 
@@ -26,10 +26,7 @@ export class LocationController implements Controller {
         items
       })
 
-      return {
-        statusCode: 200,
-        body: null
-      }
+      return noContent()
     } catch (error) {
       return serverError()
     }
