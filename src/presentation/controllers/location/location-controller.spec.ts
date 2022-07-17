@@ -1,3 +1,5 @@
+import { MissingParamError } from '@/presentation/errors'
+import { badRequest } from '@/presentation/helpers/http-helpers'
 import { Validation } from '@/presentation/protocols/validation'
 import { HttpRequest } from '../item/item-protocols'
 import { LocationController } from './location-controller'
@@ -47,5 +49,13 @@ describe('Location Controller', () => {
     const httpRequest = mockFakeRequest()
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body)
+  })
+
+  test('Should returns 400 if validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpRequest = mockFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
