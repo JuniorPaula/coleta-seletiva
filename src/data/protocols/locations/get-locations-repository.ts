@@ -1,11 +1,6 @@
 import { LocationModel } from '@/domain/model/location-model'
+import { DataLocation } from '@/domain/usecases/locations/get-locations'
 
-export type DataLocation = {
-  city?: string
-  uf?: string
-  items?: string[]
-}
-
-export interface GetLocations {
+export interface GetLocationsRepository {
   get: (query: DataLocation) => Promise<LocationModel>
 }
