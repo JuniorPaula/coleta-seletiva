@@ -56,4 +56,13 @@ describe('Db GetLocations usecase', () => {
     await sut.get(mockQuery())
     expect(getSpy).toHaveBeenCalledWith(mockQuery())
   })
+
+  test('Should throw if GetLocationsRepository throws', async () => {
+    const { sut, getLocationsStub } = makeSut()
+    jest.spyOn(getLocationsStub, 'get').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+    const promise = sut.get(mockQuery())
+    await expect(promise).rejects.toThrow()
+  })
 })
