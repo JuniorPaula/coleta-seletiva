@@ -30,6 +30,17 @@ const mockLocationItem = (): LocationItemModel[] => {
   ]
 }
 
+type SutTypes = {
+  sut: LocationMongoRepository
+}
+
+const makeSut = (): SutTypes => {
+  const sut = new LocationMongoRepository()
+  return {
+    sut
+  }
+}
+
 let locationCollection: Collection
 let locationsItemsCollection: Collection
 
@@ -49,13 +60,13 @@ describe('Location Mongo Repository', () => {
     await locationsItemsCollection.deleteMany({})
   })
   test('Should add a location on success', async () => {
-    const sut = new LocationMongoRepository()
+    const { sut } = makeSut()
     const locationId = await sut.add(mockLocation())
     expect(locationId).toBeTruthy()
   })
 
   test('Should create a relation of the locationsItems on success', async () => {
-    const sut = new LocationMongoRepository()
+    const { sut } = makeSut()
     await sut.create(mockLocationItem())
     const res = await locationsItemsCollection.find().toArray()
     expect(res).toBeTruthy()
