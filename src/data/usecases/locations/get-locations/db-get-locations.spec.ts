@@ -65,4 +65,10 @@ describe('Db GetLocations usecase', () => {
     const promise = sut.get(mockQuery())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should returns a locations on success', async () => {
+    const { sut } = makeSut()
+    const locations = await sut.get(mockQuery())
+    expect(locations).toEqual(mockLocationModel())
+  })
 })
