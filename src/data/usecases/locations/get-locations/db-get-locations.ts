@@ -6,7 +6,7 @@ export class DbGetLocations implements GetLocations {
   constructor (private readonly getLocationsRepository: GetLocationsRepository) {}
 
   async get (query: DataLocation): Promise<LocationModel> {
-    await this.getLocationsRepository.get(query)
-    return await Promise.resolve(null)
+    const locations = await this.getLocationsRepository.get(query)
+    return locations
   }
 }
