@@ -12,16 +12,19 @@ const mockQuery = (): DataLocation => ({
 })
 
 const mockLocationModel = (): LocationModel => ({
-  id: 'any_id',
-  image: 'any_url_image',
-  name: 'any_name',
-  email: 'any_email',
-  latitude: 1234,
-  longitude: 5678,
-  city: 'any_city',
-  uf: 'any_uf',
+  location: {
+    id: 'any_id',
+    image: 'any_url_image',
+    name: 'any_name',
+    email: 'any_email',
+    latitude: 1234,
+    longitude: 5678,
+    city: 'any_city',
+    uf: 'any_uf'
+  },
   items: [
-    'any_item_id'
+    { title: 'any_title' },
+    { title: 'other_title' }
   ]
 })
 

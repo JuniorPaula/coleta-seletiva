@@ -1,7 +1,6 @@
 import { LocationItemRepository } from '@/data/protocols/location-item/location-item-repository'
 import { AddLocationRepository } from '@/data/protocols/locations/add-location-repository'
 import { LocationItemModel } from '@/domain/model/location-item-model'
-import { LocationModel } from '@/domain/model/location-model'
 import { LocationItem } from '@/domain/usecases/location-item/create-location-item'
 import { AddLocation, AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { DbAddLocation } from './db-add-location'
@@ -34,7 +33,7 @@ const mockLocationItem = (): LocationItemModel[] => {
 
 const mockAddLocationRepository = (): AddLocationRepository => {
   class AddLocationRepositoryStub implements AddLocationRepository {
-    async add (location: LocationModel): Promise<string> {
+    async add (location: AddLocationModel): Promise<string> {
       return await new Promise(resolve => resolve('any_location_id'))
     }
   }

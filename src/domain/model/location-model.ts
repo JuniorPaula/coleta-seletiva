@@ -1,4 +1,9 @@
 export type LocationModel = {
+  location: Location
+  items: Items[]
+}
+
+type Location = {
   id: string
   image?: string
   name: string
@@ -7,5 +12,8 @@ export type LocationModel = {
   longitude: number
   city: string
   uf: string
-  items: string[]
+}
+
+type Items = {
+  title: string
 }
