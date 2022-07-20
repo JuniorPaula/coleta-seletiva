@@ -1,21 +1,7 @@
 import { Collection } from 'mongodb'
-import { AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { LocationMongoRepository } from './location'
 import { LocationItemModel } from '@/domain/model/location-item-model'
-
-const mockLocation = (): AddLocationModel => ({
-  name: 'any_name',
-  email: 'any_email@mail.com',
-  latitude: 12345,
-  longitude: 54321,
-  city: 'any_city',
-  uf: 'any_uf',
-  items: [
-    'any_item_id_1',
-    'any_item_id_2'
-  ]
-})
 
 const mockLocationItem = (): LocationItemModel[] => {
   return [
@@ -43,6 +29,7 @@ const makeSut = (): SutTypes => {
 
 let locationCollection: Collection
 let locationsItemsCollection: Collection
+let itemsColletiion: Collection
 
 describe('Location Mongo Repository', () => {
   beforeAll(async () => {
@@ -58,10 +45,28 @@ describe('Location Mongo Repository', () => {
     await locationCollection.deleteMany({})
     locationsItemsCollection = MongoHelper.getCollection('locations_items')
     await locationsItemsCollection.deleteMany({})
+    itemsColletiion = MongoHelper.getCollection('items')
+    await itemsColletiion.deleteMany({})
   })
   test('Should add a location on success', async () => {
     const { sut } = makeSut()
-    const locationId = await sut.add(mockLocation())
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
+
+    const locationId = await sut.add({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      latitude: 12345,
+      longitude: 54321,
+      city: 'any_city',
+      uf: 'any_uf',
+      items: [
+        itemId
+      ]
+    })
     expect(locationId).toBeTruthy()
   })
 
@@ -100,12 +105,13 @@ describe('Location Mongo Repository', () => {
         ]
       }
     ])
+
     const locations = await sut.get({
       city: 'any_city',
       uf: 'any_uf',
       items: ['any_item_id']
     })
-    console.log(locations)
+
     expect(locations[0].name).toEqual('any_name')
     expect(locations[1].name).toEqual('other_name')
   })

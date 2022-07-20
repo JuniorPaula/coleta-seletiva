@@ -4,6 +4,7 @@ import request from 'supertest'
 import app from '../config/app'
 
 let locationColletion: Collection
+let itemsColletiion: Collection
 
 describe('Item Routes', () => {
   beforeAll(async () => {
@@ -17,8 +18,15 @@ describe('Item Routes', () => {
   beforeEach(async () => {
     locationColletion = MongoHelper.getCollection('locations')
     await locationColletion.deleteMany({})
+    itemsColletiion = MongoHelper.getCollection('items')
+    await itemsColletiion.deleteMany({})
   })
   test('Should save a location on success', async () => {
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
     await request(app)
       .post('/api/v1/location')
       .send({
@@ -29,8 +37,7 @@ describe('Item Routes', () => {
         city: 'any_city',
         uf: 'any_uf',
         items: [
-          'any_item_id_1',
-          'any_item_id_2'
+          itemId
         ]
       })
       .expect(204)
