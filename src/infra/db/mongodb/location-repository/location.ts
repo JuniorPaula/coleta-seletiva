@@ -13,22 +13,32 @@ export class LocationMongoRepository implements AddLocationRepository,
   async add (location: AddLocationModel): Promise<string> {
     const locationCollection = MongoHelper.getCollection('locations')
     const itemColletion = MongoHelper.getCollection('items')
+    const locationItemsIds: any[] = []
 
-    const [itemId] = location.items.map(id => id)
-
-    const result = await itemColletion.find({ _id: new ObjectId(itemId) }).toArray()
-    const [locations] = result.map(index => {
-      return Object.assign({
-        location: {
-          name: location.name,
-          email: location.email,
-          latitude: location.latitude,
-          longitude: location.longitude,
-          city: location.city,
-          uf: location.uf
-        }
-      }, { items: [{ title: index.title }] })
+    for (let i = 0; i < location.items.length; i++) {
+      const id = location.items[i].id
+      const [itemsIds] = await itemColletion.find({ _id: new ObjectId(id) }).toArray()
+      locationItemsIds.push(itemsIds)
+    }
+    const itemsTitle = locationItemsIds.map(index => {
+      return {
+        title: index.title
+      }
     })
+
+    const locations = Object.assign({
+      location: {
+        name: location.name,
+        email: location.email,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        city: location.city,
+        uf: location.uf
+      }
+    }, {
+      items: itemsTitle
+    })
+
     const locationId = await locationCollection.insertOne(locations)
     return locationId.insertedId.toHexString()
   }

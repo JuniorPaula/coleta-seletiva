@@ -11,10 +11,11 @@ export class DbAddLocation implements AddLocation {
 
   async add (location: AddLocationModel): Promise<string> {
     const locationId = await this.addLocationRepository.add(location)
-    const locationItem = location.items.map((item_id: string) => {
+
+    const locationItem = location.items.map(({ id }) => {
       return {
         location_id: locationId,
-        item_id
+        item_id: id
       }
     })
     await this.locationItemRepository.create(locationItem)

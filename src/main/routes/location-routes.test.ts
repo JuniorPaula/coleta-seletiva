@@ -37,7 +37,7 @@ describe('Item Routes', () => {
         city: 'any_city',
         uf: 'any_uf',
         items: [
-          itemId
+          { id: itemId }
         ]
       })
       .expect(204)

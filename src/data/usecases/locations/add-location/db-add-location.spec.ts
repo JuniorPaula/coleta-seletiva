@@ -13,8 +13,8 @@ const mockLocation = (): AddLocationModel => ({
   city: 'any_city',
   uf: 'any_uf',
   items: [
-    'any_item_id_1',
-    'any_item_id_2'
+    { id: 'any_item_id_1' },
+    { id: 'any_item_id_2' }
   ]
 })
 

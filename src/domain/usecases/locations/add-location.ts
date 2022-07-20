@@ -6,7 +6,10 @@ export type AddLocationModel = {
   longitude: number
   city: string
   uf: string
-  items: string[]
+  items: ItemsId[]
+}
+type ItemsId = {
+  id: string
 }
 
 export interface AddLocation {

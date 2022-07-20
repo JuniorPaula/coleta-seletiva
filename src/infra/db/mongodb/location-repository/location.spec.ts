@@ -48,13 +48,18 @@ describe('Location Mongo Repository', () => {
     itemsColletiion = MongoHelper.getCollection('items')
     await itemsColletiion.deleteMany({})
   })
-  test('Should add a location on success', async () => {
+  test('Should add a location with correct items ids', async () => {
     const { sut } = makeSut()
     const res = await itemsColletiion.insertOne({
       title: 'any_title',
       image: 'any_image'
     })
+    const res2 = await itemsColletiion.insertOne({
+      title: 'other_title',
+      image: 'other_image'
+    })
     const itemId = res.insertedId.toHexString()
+    const itemId2 = res2.insertedId.toHexString()
 
     const locationId = await sut.add({
       name: 'any_name',
@@ -64,7 +69,8 @@ describe('Location Mongo Repository', () => {
       city: 'any_city',
       uf: 'any_uf',
       items: [
-        itemId
+        { id: itemId },
+        { id: itemId2 }
       ]
     })
     expect(locationId).toBeTruthy()
