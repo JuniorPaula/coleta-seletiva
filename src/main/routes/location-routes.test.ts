@@ -26,6 +26,7 @@ describe('Item Routes', () => {
       title: 'any_title',
       image: 'any_image'
     })
+
     const itemId = res.insertedId.toHexString()
     await request(app)
       .post('/api/v1/location')

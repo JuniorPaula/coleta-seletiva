@@ -1,20 +1,6 @@
 import { Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { LocationMongoRepository } from './location'
-import { LocationItemModel } from '@/domain/model/location-item-model'
-
-const mockLocationItem = (): LocationItemModel[] => {
-  return [
-    {
-      location_id: 'any_location_id',
-      item_id: 'any_item_id_1'
-    },
-    {
-      location_id: 'any_location_id',
-      item_id: 'any_item_id_2'
-    }
-  ]
-}
 
 type SutTypes = {
   sut: LocationMongoRepository
@@ -28,7 +14,6 @@ const makeSut = (): SutTypes => {
 }
 
 let locationCollection: Collection
-let locationsItemsCollection: Collection
 let itemsColletiion: Collection
 
 describe('Location Mongo Repository', () => {
@@ -43,8 +28,6 @@ describe('Location Mongo Repository', () => {
   beforeEach(async () => {
     locationCollection = MongoHelper.getCollection('locations')
     await locationCollection.deleteMany({})
-    locationsItemsCollection = MongoHelper.getCollection('locations_items')
-    await locationsItemsCollection.deleteMany({})
     itemsColletiion = MongoHelper.getCollection('items')
     await itemsColletiion.deleteMany({})
   })
@@ -74,13 +57,6 @@ describe('Location Mongo Repository', () => {
       ]
     })
     expect(locationId).toBeTruthy()
-  })
-
-  test('Should create a relation of the locationsItems on success', async () => {
-    const { sut } = makeSut()
-    await sut.create(mockLocationItem())
-    const res = await locationsItemsCollection.find().toArray()
-    expect(res).toBeTruthy()
   })
 
   test('Should return a locations on success', async () => {

@@ -5,8 +5,7 @@ import { makeLocationValidation } from './location-validation-factory'
 
 export const makeLocationController = (): LocationController => {
   const addLocationRepository = new LocationMongoRepository()
-  const locationItemRepository = new LocationMongoRepository()
 
-  const addLocation = new DbAddLocation(addLocationRepository, locationItemRepository)
+  const addLocation = new DbAddLocation(addLocationRepository)
   return new LocationController(makeLocationValidation(), addLocation)
 }
