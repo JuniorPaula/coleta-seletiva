@@ -40,9 +40,10 @@ export class LocationMongoRepository implements AddLocationRepository, GetLocati
     return locationId.insertedId.toHexString()
   }
 
-  async get (query: DataLocation): Promise<LocationModel> {
+  async get (query?: DataLocation): Promise<LocationModel> {
     const locationCollection = MongoHelper.getCollection('locations')
     const locations = await locationCollection.find().toArray()
-    return MongoHelper.map(locations)
+
+    return MongoHelper.mapColletion(locations)
   }
 }
