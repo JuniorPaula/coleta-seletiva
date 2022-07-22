@@ -178,4 +178,43 @@ describe('Location Mongo Repository', () => {
     expect(locations).toBeTruthy()
     expect(locations[0].name).toBe('any_name')
   })
+
+  test('Should return [] if filter no find locations', async () => {
+    const { sut } = makeSut()
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
+    await locationCollection.insertMany([
+      {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'any_city',
+        uf: 'any_uf',
+        items: [
+          { id: itemId }
+        ]
+      },
+      {
+        name: 'other_name',
+        email: 'other_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'other_city',
+        uf: 'other_uf',
+        items: [
+          { id: itemId }
+        ]
+      }
+    ])
+
+    const locations = await sut.get({
+      uf: 'unknow_uf'
+    })
+
+    expect(locations).toHaveLength(0)
+  })
 })
