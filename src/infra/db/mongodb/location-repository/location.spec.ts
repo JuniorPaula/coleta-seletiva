@@ -59,8 +59,13 @@ describe('Location Mongo Repository', () => {
     expect(locationId).toBeTruthy()
   })
 
-  test('Should return a locations on success', async () => {
+  test('Should return all locations if no query params was provided', async () => {
     const { sut } = makeSut()
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
     await locationCollection.insertMany([
       {
         name: 'any_name',
@@ -70,8 +75,7 @@ describe('Location Mongo Repository', () => {
         city: 'any_city',
         uf: 'any_uf',
         items: [
-          'any_item_id_1',
-          'any_item_id_2'
+          { id: itemId }
         ]
       },
       {
@@ -82,19 +86,16 @@ describe('Location Mongo Repository', () => {
         city: 'other_city',
         uf: 'other_uf',
         items: [
-          'other_item_id_1',
-          'other_item_id_2'
+          { id: itemId }
         ]
       }
     ])
 
-    const locations = await sut.get({
-      city: 'any_city',
-      uf: 'any_uf',
-      items: ['any_item_id']
-    })
+    const locations = await sut.get()
 
-    expect(locations[0].name).toEqual('any_name')
-    expect(locations[1].name).toEqual('other_name')
+    expect(locations).toBeTruthy()
+    expect(locations[0].name).toBe('any_name')
+    expect(locations[1].name).toBe('other_name')
+    expect(locations).toHaveLength(2)
   })
 })
