@@ -5,10 +5,7 @@ import { DbGetLocations } from './db-get-locations'
 
 const mockQuery = (): DataLocation => ({
   city: 'any_city',
-  uf: 'any_uf',
-  items: [
-    'any_item_id'
-  ]
+  uf: 'any_uf'
 })
 
 const mockLocationModel = (): LocationModel => ({
