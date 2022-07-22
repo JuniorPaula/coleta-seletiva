@@ -98,4 +98,44 @@ describe('Location Mongo Repository', () => {
     expect(locations[1].name).toBe('other_name')
     expect(locations).toHaveLength(2)
   })
+
+  test('Should return locations filtered by city', async () => {
+    const { sut } = makeSut()
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
+    await locationCollection.insertMany([
+      {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'any_city',
+        uf: 'any_uf',
+        items: [
+          { id: itemId }
+        ]
+      },
+      {
+        name: 'other_name',
+        email: 'other_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'other_city',
+        uf: 'other_uf',
+        items: [
+          { id: itemId }
+        ]
+      }
+    ])
+
+    const locations = await sut.get({
+      city: 'other_city'
+    })
+
+    expect(locations).toBeTruthy()
+    expect(locations[0].name).toBe('other_name')
+  })
 })
