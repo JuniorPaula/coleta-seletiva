@@ -42,8 +42,13 @@ export class LocationMongoRepository implements AddLocationRepository, GetLocati
 
   async get (query?: DataLocation): Promise<LocationModel> {
     const locationCollection = MongoHelper.getCollection('locations')
-    const locations = await locationCollection.find().toArray()
+    let locations = await locationCollection.find().toArray()
 
+    if (query) {
+      locations = await locationCollection.find({
+        $or: [{ city: query.city }, { uf: query.uf }]
+      }).toArray()
+    }
     return MongoHelper.mapColletion(locations)
   }
 }
