@@ -1,5 +1,6 @@
 import { LocationModel } from '@/domain/model/location-model'
 import { DataLocation, GetLocations } from '@/domain/usecases/locations/get-locations'
+import { NotFoundError } from '@/presentation/errors'
 import { HttpRequest } from '../item/item-protocols'
 import { GetLocationController } from './get-location-controller'
 
@@ -7,26 +8,30 @@ const mockHttpRequest = (): HttpRequest => ({
   query: 'any_query'
 })
 
-const mockLocationModel = (): LocationModel => ({
-  location: {
-    id: 'any_id',
-    image: 'any_url_image',
-    name: 'any_name',
-    email: 'any_email',
-    latitude: 1234,
-    longitude: 5678,
-    city: 'any_city',
-    uf: 'any_uf'
-  },
-  items: [
-    { title: 'any_title' },
-    { title: 'other_title' }
+const mockLocationModel = (): LocationModel[] => {
+  return [
+    {
+      location: {
+        id: 'any_id',
+        image: 'any_url_image',
+        name: 'any_name',
+        email: 'any_email',
+        latitude: 1234,
+        longitude: 5678,
+        city: 'any_city',
+        uf: 'any_uf'
+      },
+      items: [
+        { title: 'any_title' },
+        { title: 'other_title' }
+      ]
+    }
   ]
-})
+}
 
 const mockGetLocation = (): GetLocations => {
   class GetLocationStub implements GetLocations {
-    async get (query: DataLocation): Promise<LocationModel> {
+    async get (query: DataLocation): Promise<LocationModel[]> {
       return await Promise.resolve(mockLocationModel())
     }
   }
@@ -55,5 +60,14 @@ describe('GetLocation Controller', () => {
     const httpRequest = mockHttpRequest()
     await sut.handle(httpRequest)
     expect(getSpy).toHaveBeenCalledWith('any_query')
+  })
+
+  test('Should return 404 if GetLocation retuns an empty list', async () => {
+    const { sut, getLocationStub } = makeSut()
+    jest.spyOn(getLocationStub, 'get').mockResolvedValueOnce(new Promise(resolve => resolve([])))
+    const httpRequest = mockHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(404)
+    expect(httpResponse.body).toEqual(new NotFoundError())
   })
 })
