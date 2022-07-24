@@ -8,26 +8,30 @@ const mockQuery = (): DataLocation => ({
   uf: 'any_uf'
 })
 
-const mockLocationModel = (): LocationModel => ({
-  location: {
-    id: 'any_id',
-    image: 'any_url_image',
-    name: 'any_name',
-    email: 'any_email',
-    latitude: 1234,
-    longitude: 5678,
-    city: 'any_city',
-    uf: 'any_uf'
-  },
-  items: [
-    { title: 'any_title' },
-    { title: 'other_title' }
+const mockLocationModel = (): LocationModel[] => {
+  return [
+    {
+      location: {
+        id: 'any_id',
+        image: 'any_url_image',
+        name: 'any_name',
+        email: 'any_email',
+        latitude: 1234,
+        longitude: 5678,
+        city: 'any_city',
+        uf: 'any_uf'
+      },
+      items: [
+        { title: 'any_title' },
+        { title: 'other_title' }
+      ]
+    }
   ]
-})
+}
 
 const mockGetLocationsRepository = (): GetLocationsRepository => {
   class GetLocationsRepositoryStub implements GetLocationsRepository {
-    async get (query: DataLocation): Promise<LocationModel> {
+    async get (query: DataLocation): Promise<LocationModel[]> {
       return await Promise.resolve(mockLocationModel())
     }
   }

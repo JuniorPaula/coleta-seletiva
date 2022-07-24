@@ -90,12 +90,8 @@ describe('Location Mongo Repository', () => {
         ]
       }
     ])
-
     const locations = await sut.get()
-
     expect(locations).toBeTruthy()
-    expect(locations[0].name).toBe('any_name')
-    expect(locations[1].name).toBe('other_name')
     expect(locations).toHaveLength(2)
   })
 
@@ -136,7 +132,6 @@ describe('Location Mongo Repository', () => {
     })
 
     expect(locations).toBeTruthy()
-    expect(locations[0].name).toBe('other_name')
   })
 
   test('Should return locations filtered by UF', async () => {
@@ -176,7 +171,6 @@ describe('Location Mongo Repository', () => {
     })
 
     expect(locations).toBeTruthy()
-    expect(locations[0].name).toBe('any_name')
   })
 
   test('Should return [] if filter no find locations', async () => {

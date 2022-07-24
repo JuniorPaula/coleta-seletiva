@@ -5,7 +5,7 @@ import { DataLocation, GetLocations } from '@/domain/usecases/locations/get-loca
 export class DbGetLocations implements GetLocations {
   constructor (private readonly getLocationsRepository: GetLocationsRepository) {}
 
-  async get (query: DataLocation): Promise<LocationModel> {
+  async get (query: DataLocation): Promise<LocationModel[]> {
     const locations = await this.getLocationsRepository.get(query)
     return locations
   }

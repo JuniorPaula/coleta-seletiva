@@ -6,5 +6,5 @@ export type DataLocation = {
 }
 
 export interface GetLocations {
-  get: (query: DataLocation) => Promise<LocationModel>
+  get: (query: DataLocation) => Promise<LocationModel[]>
 }
