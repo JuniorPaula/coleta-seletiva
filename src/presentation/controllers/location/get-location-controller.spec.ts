@@ -1,6 +1,6 @@
 import { LocationModel } from '@/domain/model/location-model'
 import { DataLocation, GetLocations } from '@/domain/usecases/locations/get-locations'
-import { NotFoundError } from '@/presentation/errors'
+import { NotFoundError, ServerError } from '@/presentation/errors'
 import { HttpRequest } from '../item/item-protocols'
 import { GetLocationController } from './get-location-controller'
 
@@ -69,5 +69,16 @@ describe('GetLocation Controller', () => {
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(404)
     expect(httpResponse.body).toEqual(new NotFoundError())
+  })
+
+  test('Should return 500 if GetLocation throws', async () => {
+    const { sut, getLocationStub } = makeSut()
+    jest.spyOn(getLocationStub, 'get').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
+    })
+    const httpRequest = mockHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
