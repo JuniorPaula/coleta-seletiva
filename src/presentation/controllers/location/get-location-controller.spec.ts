@@ -81,4 +81,12 @@ describe('GetLocation Controller', () => {
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
+
+  test('Should return a locations with on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = mockHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(mockLocationModel())
+  })
 })
