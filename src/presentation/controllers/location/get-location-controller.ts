@@ -9,13 +9,14 @@ export class GetLocationController implements Controller {
     try {
       if (httpRequest.query) {
         const locations = await this.getLocation.get(httpRequest.query)
-        if (!locations.length) {
-          return notFoundError()
-        }
+        if (!locations.length) return notFoundError()
+
         return ok(locations)
       }
+      const locations = await this.getLocation.get()
+      if (!locations.length) return notFoundError()
 
-      return await new Promise(resolve => resolve(null))
+      return ok(locations)
     } catch (error) {
       return serverError()
     }
