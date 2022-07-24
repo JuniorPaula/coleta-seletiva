@@ -82,10 +82,17 @@ describe('GetLocation Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('Should return a locations with on success', async () => {
+  test('Should return a locations on success', async () => {
     const { sut } = makeSut()
     const httpRequest = mockHttpRequest()
     const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(mockLocationModel())
+  })
+
+  test('Should return a locations with no query is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({})
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(mockLocationModel())
   })
