@@ -45,33 +45,28 @@ describe('Location Routes', () => {
   })
 
   test('Should return a locations on success if no query is provided', async () => {
-    const res = await itemsColletiion.insertOne({
-      title: 'any_title',
-      image: 'any_image'
-    })
-    const itemId = res.insertedId.toHexString()
     await locationCollection.insertMany([
       {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        latitude: 12345,
-        longitude: 54321,
-        city: 'any_city',
-        uf: 'any_uf',
-        items: [
-          { id: itemId }
-        ]
+        location: {
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          latitude: 12345,
+          longitude: 54321,
+          city: 'any_city',
+          uf: 'any_uf'
+        },
+        items: [{ title: 'any_title' }]
       },
       {
-        name: 'other_name',
-        email: 'other_email@mail.com',
-        latitude: 12345,
-        longitude: 54321,
-        city: 'other_city',
-        uf: 'other_uf',
-        items: [
-          { id: itemId }
-        ]
+        location: {
+          name: 'other_name',
+          email: 'other_email@mail.com',
+          latitude: 12345,
+          longitude: 54321,
+          city: 'other_city',
+          uf: 'other_uf'
+        },
+        items: [{ title: 'other_title' }]
       }
     ])
 

@@ -7,13 +7,7 @@ export class GetLocationController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (httpRequest.query) {
-        const locations = await this.getLocation.get(httpRequest.query)
-        if (!locations.length) return notFoundError()
-
-        return ok(locations)
-      }
-      const locations = await this.getLocation.get()
+      const locations = await this.getLocation.get(httpRequest.query)
       if (!locations.length) return notFoundError()
 
       return ok(locations)
