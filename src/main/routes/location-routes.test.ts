@@ -3,10 +3,10 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import request from 'supertest'
 import app from '../config/app'
 
-let locationColletion: Collection
+let locationCollection: Collection
 let itemsColletiion: Collection
 
-describe('Item Routes', () => {
+describe('Location Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
@@ -16,8 +16,8 @@ describe('Item Routes', () => {
   })
 
   beforeEach(async () => {
-    locationColletion = MongoHelper.getCollection('locations')
-    await locationColletion.deleteMany({})
+    locationCollection = MongoHelper.getCollection('locations')
+    await locationCollection.deleteMany({})
     itemsColletiion = MongoHelper.getCollection('items')
     await itemsColletiion.deleteMany({})
   })
@@ -42,5 +42,41 @@ describe('Item Routes', () => {
         ]
       })
       .expect(204)
+  })
+
+  test('Should return a locations on success if no query is provided', async () => {
+    const res = await itemsColletiion.insertOne({
+      title: 'any_title',
+      image: 'any_image'
+    })
+    const itemId = res.insertedId.toHexString()
+    await locationCollection.insertMany([
+      {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'any_city',
+        uf: 'any_uf',
+        items: [
+          { id: itemId }
+        ]
+      },
+      {
+        name: 'other_name',
+        email: 'other_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'other_city',
+        uf: 'other_uf',
+        items: [
+          { id: itemId }
+        ]
+      }
+    ])
+
+    await request(app)
+      .get('/api/v1/location?city=any_city')
+      .expect(200)
   })
 })
