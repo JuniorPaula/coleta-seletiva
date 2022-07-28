@@ -3,10 +3,12 @@ import { GetLocationsRepository } from '@/data/protocols/locations/get-locations
 import { LocationModel } from '@/domain/model/location-model'
 import { AddLocationModel } from '@/domain/usecases/locations/add-location'
 import { DataLocation } from '@/domain/usecases/locations/get-locations'
+import { LoadLocationById } from '@/domain/usecases/locations/load-location-by-id'
 import { ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 
-export class LocationMongoRepository implements AddLocationRepository, GetLocationsRepository {
+export class LocationMongoRepository implements
+ AddLocationRepository, GetLocationsRepository, LoadLocationById {
   async add (location: AddLocationModel): Promise<string> {
     const locationCollection = MongoHelper.getCollection('locations')
     const itemColletion = MongoHelper.getCollection('items')
@@ -53,5 +55,11 @@ export class LocationMongoRepository implements AddLocationRepository, GetLocati
     }).toArray()
 
     return MongoHelper.mapColletion(locations)
+  }
+
+  async loadById (id: string): Promise<LocationModel> {
+    const locationCollection = MongoHelper.getCollection('locations')
+    const location = await locationCollection.findOne({ _id: new ObjectId(id) })
+    return location && MongoHelper.map(location)
   }
 }
