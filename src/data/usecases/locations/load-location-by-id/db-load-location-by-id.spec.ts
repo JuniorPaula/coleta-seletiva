@@ -62,4 +62,10 @@ describe('DB LoadLocationById usecase', () => {
     const promise = sut.loadById('location_id')
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return a location on success', async () => {
+    const { sut } = makeSut()
+    const location = await sut.loadById('location_id')
+    expect(location).toEqual(mockLocationModel())
+  })
 })
