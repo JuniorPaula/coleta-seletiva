@@ -8,7 +8,7 @@ export class DbLoadLocationById implements LoadLocationById {
   ) {}
 
   async loadById (id: string): Promise<LocationModel> {
-    await this.loadLocationByIdRepository.loadById(id)
-    return null
+    const location = await this.loadLocationByIdRepository.loadById(id)
+    return location
   }
 }
