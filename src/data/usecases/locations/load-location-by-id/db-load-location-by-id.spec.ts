@@ -52,4 +52,14 @@ describe('DB LoadLocationById usecase', () => {
     await sut.loadById('location_id')
     expect(loadSpy).toHaveBeenCalledWith('location_id')
   })
+
+  test('Should throw if LoadLocationByIdRepository throws', async () => {
+    const { sut, loadLocationByIdRepositoryStub } = makeSut()
+
+    jest.spyOn(loadLocationByIdRepositoryStub, 'loadById').mockReturnValueOnce(
+      new Promise((resolve, reject) => reject(new Error()))
+    )
+    const promise = sut.loadById('location_id')
+    await expect(promise).rejects.toThrow()
+  })
 })
