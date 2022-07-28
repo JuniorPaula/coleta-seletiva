@@ -197,4 +197,23 @@ describe('Location Mongo Repository', () => {
 
     expect(locations).toHaveLength(0)
   })
+
+  test('Should load a loaction by id on success', async () => {
+    const { sut } = makeSut()
+    const res = await locationCollection.insertOne({
+      location: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        latitude: 12345,
+        longitude: 54321,
+        city: 'any_city',
+        uf: 'any_uf'
+      },
+      items: [{ title: 'any_title' }]
+    })
+    const id = res.insertedId.toHexString()
+    const location = await sut.loadById(id)
+    expect(location).toBeTruthy()
+    expect(location.location.name).toBe('any_name')
+  })
 })
