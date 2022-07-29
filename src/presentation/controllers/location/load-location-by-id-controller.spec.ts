@@ -78,4 +78,11 @@ describe('LoadLocationById Controller', () => {
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError())
   })
+
+  test('Should return a location on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(mockLocationModel())
+  })
 })
