@@ -1,5 +1,7 @@
 import { LocationModel } from '@/domain/model/location-model'
 import { LoadLocationById } from '@/domain/usecases/locations/load-location-by-id'
+import { InvalidParamError } from '@/presentation/errors'
+import { forbiden } from '@/presentation/helpers/http-helpers'
 import { HttpRequest } from '@/presentation/protocols'
 import { LoadLocationByIdController } from './load-location-by-id-controller'
 
@@ -22,7 +24,7 @@ const mockLocationModel = (): LocationModel => ({
 
 const mockRequest = (): HttpRequest => ({
   params: {
-    locatonId: 'location_id'
+    locationId: 'location_id'
   }
 })
 
@@ -56,5 +58,14 @@ describe('LoadLocationById Controller', () => {
     const loadByIdSpy = jest.spyOn(loadLocationByIdStub, 'loadById')
     await sut.handle(mockRequest())
     expect(loadByIdSpy).toHaveBeenCalledWith('location_id')
+  })
+
+  test('Should return 403 if LoadLocationById null', async () => {
+    const { sut, loadLocationByIdStub } = makeSut()
+    jest.spyOn(loadLocationByIdStub, 'loadById').mockReturnValueOnce(
+      Promise.resolve(null)
+    )
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse).toEqual(forbiden(new InvalidParamError('locationId')))
   })
 })
