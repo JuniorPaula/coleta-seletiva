@@ -1,6 +1,6 @@
 import { LoadLocationById } from '@/domain/usecases/locations/load-location-by-id'
 import { InvalidParamError } from '@/presentation/errors'
-import { forbiden, serverError } from '@/presentation/helpers/http-helpers'
+import { forbiden, ok, serverError } from '@/presentation/helpers/http-helpers'
 import { Controller, HttpRequest, HttpResponse } from '../item/item-protocols'
 
 export class LoadLocationByIdController implements Controller {
@@ -13,10 +13,8 @@ export class LoadLocationByIdController implements Controller {
       if (!location) {
         return forbiden(new InvalidParamError('locationId'))
       }
-      return {
-        statusCode: 200,
-        body: 'ok'
-      }
+
+      return ok(location)
     } catch (error) {
       return serverError()
     }
