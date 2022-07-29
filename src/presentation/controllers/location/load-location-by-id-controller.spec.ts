@@ -1,7 +1,7 @@
 import { LocationModel } from '@/domain/model/location-model'
 import { LoadLocationById } from '@/domain/usecases/locations/load-location-by-id'
 import { InvalidParamError } from '@/presentation/errors'
-import { forbiden } from '@/presentation/helpers/http-helpers'
+import { forbiden, serverError } from '@/presentation/helpers/http-helpers'
 import { HttpRequest } from '@/presentation/protocols'
 import { LoadLocationByIdController } from './load-location-by-id-controller'
 
@@ -67,5 +67,15 @@ describe('LoadLocationById Controller', () => {
     )
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(forbiden(new InvalidParamError('locationId')))
+  })
+
+  test('Should return 500 if LoadLocationById throws', async () => {
+    const { sut, loadLocationByIdStub } = makeSut()
+    jest.spyOn(loadLocationByIdStub, 'loadById').mockReturnValueOnce(
+      new Promise((_, reject) => reject(new Error()))
+    )
+
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse).toEqual(serverError())
   })
 })
