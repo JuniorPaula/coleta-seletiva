@@ -74,4 +74,23 @@ describe('Location Routes', () => {
       .get('/api/v1/location?city=any_city')
       .expect(200)
   })
+
+  test('Should return a location by id', async () => {
+    const res = await locationCollection.insertOne(
+      {
+        location: {
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          latitude: 12345,
+          longitude: 54321,
+          city: 'any_city',
+          uf: 'any_uf'
+        },
+        items: [{ title: 'any_title' }]
+      })
+    const locationId = res.insertedId
+    await request(app)
+      .get(`/api/v1/location/${locationId}`)
+      .expect(200)
+  })
 })
