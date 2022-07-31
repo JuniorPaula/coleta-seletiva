@@ -5,6 +5,11 @@ import { HttpRequest, HttpResponse } from '../item/item-protocols'
 
 export class SignupController implements Controller {
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    return badRequest(new MissingParamError('name'))
+    if (!httpRequest.body.name) {
+      return badRequest(new MissingParamError('name'))
+    }
+    if (!httpRequest.body.email) {
+      return badRequest(new MissingParamError('email'))
+    }
   }
 }
