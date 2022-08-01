@@ -1,6 +1,24 @@
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors'
 import { EmailValidator } from '@/validations/protocols/email-validator'
+import { AccountModel, AddAccount, AddAccountModel } from './signup-protocols'
 import { SignupController } from './signup'
+
+const mockAccount = (): AccountModel => ({
+  id: 'valid_id',
+  name: 'valid_name',
+  email: 'valid@mail.com',
+  password: 'valid_password'
+})
+
+const mockAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async create (account: AddAccountModel): Promise<AccountModel> {
+      return await Promise.resolve(mockAccount())
+    }
+  }
+
+  return new AddAccountStub()
+}
 
 const mockEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -15,14 +33,17 @@ const mockEmailValidator = (): EmailValidator => {
 type SutTypes = {
   sut: SignupController
   emailValidatorStub: EmailValidator
+  addAccountStub: AddAccount
 }
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = mockEmailValidator()
-  const sut = new SignupController(emailValidatorStub)
+  const addAccountStub = mockAddAccount()
+  const sut = new SignupController(emailValidatorStub, addAccountStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    addAccountStub
   }
 }
 
@@ -145,5 +166,24 @@ describe('Signup Controller', () => {
     const httpResponse = await sut.handle(httpResquest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Should call AddAccount with correct values', async () => {
+    const { sut, addAccountStub } = makeSut()
+    const createSpy = jest.spyOn(addAccountStub, 'create')
+    const httpResquest = {
+      body: {
+        name: 'any_name',
+        email: 'valid@mail.com',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    await sut.handle(httpResquest)
+    expect(createSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'valid@mail.com',
+      password: 'any_pass'
+    })
   })
 })
