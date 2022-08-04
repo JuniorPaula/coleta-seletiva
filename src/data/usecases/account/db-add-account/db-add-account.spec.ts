@@ -11,8 +11,8 @@ const mockAccount = (): Omit<AccountModel, 'id'> => ({
 })
 
 const mockEncrypter = (): Encrypter => {
-  class EncrypterStub {
-    async encrypt (email: string): Promise<string> {
+  class EncrypterStub implements Encrypter {
+    async encrypt (value: string): Promise<string> {
       return await Promise.resolve('encrypted_password')
     }
   }
@@ -26,7 +26,7 @@ const mockAddAccountRepository = (): AddAccountRepository => {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email',
-        password: 'valid_password'
+        password: 'encrypted_password'
       })
     }
   }
@@ -87,5 +87,16 @@ describe('DbAddAccount usecase', () => {
     )
     const promise = sut.create(mockAccount())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.create(mockAccount())
+    expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'encrypted_password'
+    })
   })
 })
