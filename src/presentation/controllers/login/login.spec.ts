@@ -2,6 +2,7 @@ import {
   EmailValidator,
   badRequest,
   serverError,
+  ok,
   unauthorized,
   InvalidParamError,
   MissingParamError,
@@ -122,5 +123,11 @@ describe('LoginController', () => {
     )
     const httpResponse = await sut.handle(mockHttpRequest())
     expect(httpResponse).toEqual(serverError())
+  })
+
+  test('Should return 200 if valid credentils are provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(mockHttpRequest())
+    expect(httpResponse).toEqual(ok({ access_token: 'access_token' }))
   })
 })
