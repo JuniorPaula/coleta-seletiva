@@ -3,6 +3,7 @@ import { EmailValidator } from '@/validations/protocols/email-validator'
 import { AccountModel, AddAccount, AddAccountModel } from './signup-protocols'
 import { SignupController } from './signup'
 import { Validation } from '@/presentation/protocols/validation'
+import { badRequest } from '../login/login-protocols'
 
 const mockAccount = (): AccountModel => ({
   id: 'valid_id',
@@ -247,5 +248,22 @@ describe('Signup Controller', () => {
     }
     await sut.handle(httpResquest)
     expect(validateSpy).toHaveBeenCalledWith(httpResquest.body)
+  })
+
+  test('Should return 400 if Validation return an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(
+      new MissingParamError('any_field')
+    )
+    const httpResquest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid@mail.com',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    const httpResponse = await sut.handle(httpResquest)
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
