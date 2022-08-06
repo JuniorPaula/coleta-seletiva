@@ -5,7 +5,8 @@ import {
   unauthorized,
   MissingParamError,
   Authentication,
-  Validation
+  Validation,
+  AuthenticationModel
 } from './login-protocols'
 import { HttpRequest } from '../item/item-protocols'
 import { LoginController } from './login'
@@ -19,7 +20,7 @@ const mockHttpRequest = (): HttpRequest => ({
 
 const mockAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (email: string, password: string): Promise<string> {
+    async auth (authentication: AuthenticationModel): Promise<string> {
       return await Promise.resolve('access_token')
     }
   }
@@ -59,7 +60,10 @@ describe('LoginController', () => {
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(mockHttpRequest())
-    expect(authSpy).toHaveBeenCalledWith('any_mail@mail.com', 'any_password')
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_mail@mail.com',
+      password: 'any_password'
+    })
   })
 
   test('Should return 401 if invalid credentils are provided', async () => {
