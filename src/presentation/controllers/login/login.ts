@@ -4,6 +4,7 @@ import {
   HttpResponse,
   EmailValidator,
   badRequest,
+  ok,
   serverError,
   unauthorized,
   InvalidParamError,
@@ -35,6 +36,8 @@ export class LoginController implements Controller {
       if (!accessToken) {
         return unauthorized()
       }
+
+      return ok({ access_token: accessToken })
     } catch (error) {
       return serverError()
     }
