@@ -1,7 +1,7 @@
 import { Validation } from '@/presentation/protocols/validation'
 import { CompareFieldsValidation } from '@/validations/validator/compare-field-validation'
 import { EmailValidation } from '@/validations/validator/email-validation'
-import { EmailValidatorAdapter } from '@/validations/validator/email-validator-adapter'
+import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 import { RequiredFieldValidation } from '@/validations/validator/required-field-validation'
 import { ValidationComposite } from '@/validations/validator/validation-composite'
 
