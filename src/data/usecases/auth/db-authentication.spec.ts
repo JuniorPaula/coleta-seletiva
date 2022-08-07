@@ -1,5 +1,6 @@
 import { LoadAccountByEmailRepository } from '@/data/protocols/account/load-by-email-repository'
 import { HashComparer } from '@/data/protocols/criptography/hash-comparer'
+import { TokenGeneration } from '@/data/protocols/criptography/token-generator'
 import { AccountModel } from '@/domain/model/account'
 import { AuthenticationModel } from '@/domain/usecases/auth/authentication'
 import { DbAuthentication } from './db-authentication'
@@ -36,21 +37,34 @@ const mockHashComparer = (): HashComparer => {
   return new HashComparerStub()
 }
 
+const mockTokenGeneration = (): TokenGeneration => {
+  class TokenGenerationStub implements TokenGeneration {
+    async generate (id: string): Promise<string> {
+      return await Promise.resolve('access_token')
+    }
+  }
+
+  return new TokenGenerationStub()
+}
+
 type SutTypes = {
   sut: DbAuthentication
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   hashComparerStub: HashComparer
+  tokenGenerationStub: TokenGeneration
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = mockloadAccountByEmailRepository()
   const hashComparerStub = mockHashComparer()
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub)
+  const tokenGenerationStub = mockTokenGeneration()
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub, tokenGenerationStub)
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGenerationStub
   }
 }
 
@@ -100,5 +114,12 @@ describe('Db Authentication usecase', () => {
       Promise.resolve(false))
     const accessToken = await sut.auth(mockAuthentication())
     expect(accessToken).toBeNull()
+  })
+
+  test('Should call TokenGeneration with correct value', async () => {
+    const { sut, tokenGenerationStub } = makeSut()
+    const generateSpy = jest.spyOn(tokenGenerationStub, 'generate')
+    await sut.auth(mockAuthentication())
+    expect(generateSpy).toHaveBeenCalledWith('valid_id')
   })
 })
