@@ -134,7 +134,7 @@ npm test
 ## **Request body**
 ~~~javascript
 {
-  	"name": "string",
+  "name": "string",
 	"email": "string",
 	"latitude": number,
 	"longitude": number,
@@ -151,22 +151,6 @@ npm test
 ### **success**
 ![Generic badge](https://img.shields.io/badge/nocontent-204-green)
 
-~~~javascript
-{
-  "surveyId": "string",
-  "question": "string",
-  "answers": [
-    {
-      "image": "string",
-      "answer": "string",
-      "count": number,
-      "percent": number,
-      "isCurrentAccountAnswer": boolean
-    }
-  ],
-  "date": "string"
-}
-~~~
 
 ### **error**
 
