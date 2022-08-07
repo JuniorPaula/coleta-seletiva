@@ -17,6 +17,6 @@ LoadAccountByEmailRepository {
   async loadByEmail (email: string): Promise<AccountModel> {
     const accountColletion = MongoHelper.getCollection('accounts')
     const account = await accountColletion.findOne({ email })
-    return MongoHelper.map(account)
+    return account && MongoHelper.map(account)
   }
 }
