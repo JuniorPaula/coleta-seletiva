@@ -22,16 +22,18 @@ describe('Account Mongo Repository', () => {
     await accountColletion.deleteMany({})
   })
 
-  test('Should return an account on success', async () => {
-    const sut = makeSut()
-    const accountModel = {
-      name: 'Jane Doe',
-      email: 'jane@mail.com',
-      password: '1234'
-    }
-    const account = await sut.add(accountModel)
-    expect(account.name).toBe('Jane Doe')
-    expect(account.email).toBe('jane@mail.com')
-    expect(account.password).toBe('1234')
+  describe('add()', () => {
+    test('Should return an account on success', async () => {
+      const sut = makeSut()
+      const accountModel = {
+        name: 'Jane Doe',
+        email: 'jane@mail.com',
+        password: '1234'
+      }
+      const account = await sut.add(accountModel)
+      expect(account.name).toBe('Jane Doe')
+      expect(account.email).toBe('jane@mail.com')
+      expect(account.password).toBe('1234')
+    })
   })
 })
