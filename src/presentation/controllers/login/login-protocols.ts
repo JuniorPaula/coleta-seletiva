@@ -1,0 +1,6 @@
+export * from '@/domain/usecases/auth/authentication'
+export * from '@/presentation/errors'
+export * from '@/presentation/protocols'
+export * from '@/presentation/helpers/http-helpers'
+export * from '@/validations/protocols/email-validator'
+export * from '@/presentation/protocols/validation'
