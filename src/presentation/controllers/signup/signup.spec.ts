@@ -8,7 +8,8 @@ import {
   AuthenticationModel,
   HttpRequest,
   ServerError,
-  MissingParamError
+  MissingParamError,
+  serverError
 } from './signup-protocols'
 import { SignupController } from './signup'
 
@@ -169,5 +170,14 @@ describe('Signup Controller', () => {
       email: 'any_mail@mail.com',
       password: 'any_password'
     })
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(
+      Promise.reject(new Error())
+    )
+    const httpResponse = await sut.handle(mockHttpRequest())
+    expect(httpResponse).toEqual(serverError())
   })
 })
