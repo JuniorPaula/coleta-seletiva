@@ -1,7 +1,8 @@
 import { Controller } from '../../protocols/controller'
 import {
   AddAccount, HttpRequest, HttpResponse, Validation,
-  badRequest, ok, serverError, Authentication
+  badRequest, ok, serverError, Authentication, forbiden,
+  EmailAlreadyExists
 } from './signup-protocols'
 
 export class SignupController implements Controller {
@@ -18,11 +19,15 @@ export class SignupController implements Controller {
         return badRequest(error)
       }
       const { name, email, password } = httpRequest.body
-      await this.addAccount.create({
+      const account = await this.addAccount.create({
         name,
         email,
         password
       })
+
+      if (!account) {
+        return forbiden(new EmailAlreadyExists())
+      }
       const accessToken = await this.authentication.auth({ email, password })
       return ok({ access_token: accessToken })
     } catch (error) {
