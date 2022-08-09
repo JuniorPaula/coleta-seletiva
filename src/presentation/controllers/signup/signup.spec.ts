@@ -1,15 +1,7 @@
 import {
-  AccountModel,
-  AddAccount,
-  AddAccountModel,
-  Validation,
-  badRequest,
-  Authentication,
-  AuthenticationModel,
-  HttpRequest,
-  ServerError,
-  MissingParamError,
-  serverError
+  AccountModel, AddAccount, AddAccountModel, AuthenticationModel,
+  Validation, Authentication, HttpRequest, badRequest, ServerError,
+  MissingParamError, EmailAlreadyExists, serverError, forbiden
 } from './signup-protocols'
 import { SignupController } from './signup'
 
@@ -113,6 +105,23 @@ describe('Signup Controller', () => {
     const httpResponse = await sut.handle(httpResquest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'create').mockReturnValueOnce(
+      Promise.resolve(null)
+    )
+    const httpResquest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid@mail.com',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    const httpResponse = await sut.handle(httpResquest)
+    expect(httpResponse).toEqual(forbiden(new EmailAlreadyExists()))
   })
 
   test('Should return 200 if valid data is provided', async () => {
