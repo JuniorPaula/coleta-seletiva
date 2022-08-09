@@ -1,2 +1,7 @@
 export * from '@/domain/model/account'
 export * from '@/domain/usecases/account/create-account'
+export * from '@/domain/usecases/auth/authentication'
+export * from '@/presentation/helpers/http-helpers'
+export * from '@/presentation/protocols/validation'
+export * from '@/presentation/protocols'
+export * from '@/presentation/errors'
