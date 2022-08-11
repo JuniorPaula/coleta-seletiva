@@ -12,7 +12,7 @@ export const makeSignupController = (): SignupController => {
   const jwtAdapter = new JwtAdapter(env.jwtSecret)
   const bcryptAdapter = new BcryptAdapter(salt)
   const accountRepository = new AccountMongoRepository()
-  const dbAddAccount = new DbAddAccount(bcryptAdapter, accountRepository)
+  const dbAddAccount = new DbAddAccount(bcryptAdapter, accountRepository, accountRepository)
 
   const dbAuthentication = new DbAuthentication(
     accountRepository,
