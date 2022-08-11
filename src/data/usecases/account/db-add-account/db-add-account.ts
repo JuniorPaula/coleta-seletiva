@@ -1,4 +1,5 @@
 import { AddAccountRepository } from '@/data/protocols/account/add-account-repository'
+import { LoadAccountByEmailRepository } from '@/data/protocols/account/load-by-email-repository'
 import { Encrypter } from '@/data/protocols/criptography/encrypter'
 import { AccountModel } from '@/domain/model/account'
 import { AddAccount, AddAccountModel } from '@/domain/usecases/account/create-account'
@@ -6,10 +7,12 @@ import { AddAccount, AddAccountModel } from '@/domain/usecases/account/create-ac
 export class DbAddAccount implements AddAccount {
   constructor (
     private readonly encrypter: Encrypter,
-    private readonly addAccountRepositoryStub: AddAccountRepository
+    private readonly addAccountRepositoryStub: AddAccountRepository,
+    private readonly loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
   ) {}
 
   async create (account: AddAccountModel): Promise<AccountModel> {
+    await this.loadAccountByEmailRepositoryStub.loadByEmail(account.email)
     const hashedPassword = await this.encrypter.encrypt(account.password)
     const accountModel = await this.addAccountRepositoryStub.add({
       name: account.name,
