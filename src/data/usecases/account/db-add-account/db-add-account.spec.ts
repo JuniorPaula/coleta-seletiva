@@ -1,4 +1,5 @@
 import { AddAccountRepository } from '@/data/protocols/account/add-account-repository'
+import { LoadAccountByEmailRepository } from '@/data/protocols/account/load-by-email-repository'
 import { Encrypter } from '@/data/protocols/criptography/encrypter'
 import { AccountModel } from '@/domain/model/account'
 import { AddAccountModel } from '@/domain/usecases/account/create-account'
@@ -6,8 +7,15 @@ import { DbAddAccount } from './db-add-account'
 
 const mockAccount = (): Omit<AccountModel, 'id'> => ({
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'valid_password'
+})
+
+const mockAccountModel = (): AccountModel => ({
+  id: 'valid_id',
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'encrypted_password'
 })
 
 const mockEncrypter = (): Encrypter => {
@@ -22,33 +30,41 @@ const mockEncrypter = (): Encrypter => {
 const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
     async add (account: AddAccountModel): Promise<AccountModel> {
-      return await Promise.resolve({
-        id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email',
-        password: 'encrypted_password'
-      })
+      return await Promise.resolve(mockAccountModel())
     }
   }
 
   return new AddAccountRepositoryStub()
 }
 
+const mockloadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
+  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
+    async loadByEmail (email: string): Promise<AccountModel> {
+      return await Promise.resolve(mockAccountModel())
+    }
+  }
+
+  return new LoadAccountByEmailRepositoryStub()
+}
+
 type SutTypes = {
   sut: DbAddAccount
   encrypterStub: Encrypter
   addAccountRepositoryStub: AddAccountRepository
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
 }
 
 const makeSut = (): SutTypes => {
   const encrypterStub = mockEncrypter()
   const addAccountRepositoryStub = mockAddAccountRepository()
-  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub)
+  const loadAccountByEmailRepositoryStub = mockloadAccountByEmailRepository()
+  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub, loadAccountByEmailRepositoryStub)
 
   return {
     sut,
     encrypterStub,
-    addAccountRepositoryStub
+    addAccountRepositoryStub,
+    loadAccountByEmailRepositoryStub
   }
 }
 
@@ -75,7 +91,7 @@ describe('DbAddAccount usecase', () => {
     await sut.create(mockAccount())
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'encrypted_password'
     })
   })
@@ -95,8 +111,15 @@ describe('DbAddAccount usecase', () => {
     expect(account).toEqual({
       id: 'valid_id',
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'encrypted_password'
     })
+  })
+
+  test('Should call loadAccountByEmailRepository with correct email', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut()
+    const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+    await sut.create(mockAccount())
+    expect(loadSpy).toHaveBeenCalledWith('valid_email@mail.com')
   })
 })
