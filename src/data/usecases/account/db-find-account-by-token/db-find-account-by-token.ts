@@ -12,7 +12,8 @@ export class DbFindAccountByToken implements FindAccountByToken {
   async findByToken (accessToken: string, role?: string): Promise<AccountModel> {
     const token = await this.decrypter.decrypt(accessToken)
     if (token) {
-      await this.findAccountByTokenRepositoryStub.findByToken(accessToken, role)
+      const account = await this.findAccountByTokenRepositoryStub.findByToken(accessToken, role)
+      return account
     }
     return null
   }
