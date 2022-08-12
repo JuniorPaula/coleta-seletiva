@@ -85,4 +85,22 @@ describe('DbFindAccountByToken usecase', () => {
     const account = await sut.findByToken('any_token', 'any_role')
     expect(account).toEqual(mockAccountModel())
   })
+
+  test('Should throws if Decrypter throws', async () => {
+    const { sut, decrypterStub } = makeSut()
+    jest.spyOn(decrypterStub, 'decrypt').mockResolvedValueOnce(
+      Promise.reject(new Error())
+    )
+    const promise = sut.findByToken('any_token', 'any_role')
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throws if FindAccountByTokenRepository throws', async () => {
+    const { sut, findAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(findAccountByTokenRepositoryStub, 'findByToken').mockResolvedValueOnce(
+      Promise.reject(new Error())
+    )
+    const promise = sut.findByToken('any_token', 'any_role')
+    await expect(promise).rejects.toThrow()
+  })
 })
