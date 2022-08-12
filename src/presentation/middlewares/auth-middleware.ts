@@ -1,6 +1,6 @@
 import { FindAccountByToken } from '@/domain/usecases/account/find-account-by-token'
 import { AccessDeniedError } from '../errors'
-import { forbiden } from '../helpers/http-helpers'
+import { forbiden, ok } from '../helpers/http-helpers'
 import { HttpRequest, HttpResponse } from '../protocols'
 import { Middleware } from '../protocols/middleware'
 
@@ -12,7 +12,10 @@ export class AuthMiddleware implements Middleware {
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     const accessToken = httpRequest.headers?.['x-access-token']
     if (accessToken) {
-      await this.findAccountByToken.findByToken(accessToken)
+      const account = await this.findAccountByToken.findByToken(accessToken)
+      if (account) {
+        return ok({ account_id: account.id })
+      }
     }
     return forbiden(new AccessDeniedError())
   }
