@@ -6,14 +6,15 @@ import { Middleware } from '../protocols/middleware'
 
 export class AuthMiddleware implements Middleware {
   constructor (
-    private readonly findAccountByToken: FindAccountByToken
+    private readonly findAccountByToken: FindAccountByToken,
+    private readonly role: string
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const accessToken = httpRequest.headers?.['x-access-token']
       if (accessToken) {
-        const account = await this.findAccountByToken.findByToken(accessToken)
+        const account = await this.findAccountByToken.findByToken(accessToken, this.role)
         if (account) {
           return ok({ account_id: account.id })
         }
