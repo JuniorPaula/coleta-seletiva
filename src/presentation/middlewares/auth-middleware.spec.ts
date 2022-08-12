@@ -1,7 +1,7 @@
 import { FindAccountByToken } from '@/domain/usecases/account/find-account-by-token'
 import { AccountModel } from '@/domain/model/account'
 import { AccessDeniedError } from '../errors'
-import { forbiden, ok } from '../helpers/http-helpers'
+import { forbiden, ok, serverError } from '../helpers/http-helpers'
 import { AuthMiddleware } from './auth-middleware'
 import { HttpRequest } from '../protocols'
 
@@ -69,5 +69,14 @@ describe('Auth Middleware', () => {
     expect(httpResponse).toEqual(ok({
       account_id: 'valid_id'
     }))
+  })
+
+  test('Should returns 500 if FindAccountByToken throws', async () => {
+    const { sut, findAccountByTokenStub } = makeSut()
+    jest.spyOn(findAccountByTokenStub, 'findByToken').mockReturnValueOnce(
+      Promise.reject(new Error())
+    )
+    const httpResponse = await sut.handle(mockHttpRequest())
+    expect(httpResponse).toEqual(serverError())
   })
 })
