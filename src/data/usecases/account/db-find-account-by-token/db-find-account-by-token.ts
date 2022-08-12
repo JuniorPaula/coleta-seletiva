@@ -14,6 +14,6 @@ export class DbFindAccountByToken implements FindAccountByToken {
     if (token) {
       await this.findAccountByTokenRepositoryStub.findByToken(accessToken, role)
     }
-    return await Promise.resolve(null)
+    return null
   }
 }
