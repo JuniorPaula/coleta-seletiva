@@ -32,9 +32,9 @@ type SutTypes = {
   findAccountByTokenStub: FindAccountByToken
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (role?: string): SutTypes => {
   const findAccountByTokenStub = mockFindAccountByToken()
-  const sut = new AuthMiddleware(findAccountByTokenStub)
+  const sut = new AuthMiddleware(findAccountByTokenStub, role)
 
   return {
     sut,
@@ -50,10 +50,11 @@ describe('Auth Middleware', () => {
   })
 
   test('Should call FindAccountByToken with correct accessToken', async () => {
-    const { sut, findAccountByTokenStub } = makeSut()
+    const role = 'any_role'
+    const { sut, findAccountByTokenStub } = makeSut(role)
     const findSpy = jest.spyOn(findAccountByTokenStub, 'findByToken')
     await sut.handle(mockHttpRequest())
-    expect(findSpy).toHaveBeenCalledWith('any_token')
+    expect(findSpy).toHaveBeenCalledWith('any_token', role)
   })
 
   test('Should returns 403 if FindAccountByToken returns null', async () => {
