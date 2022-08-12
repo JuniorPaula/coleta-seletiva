@@ -79,4 +79,10 @@ describe('DbFindAccountByToken usecase', () => {
     const account = await sut.findByToken('any_token', 'any_role')
     expect(account).toBeNull()
   })
+
+  test('Should returns an account on succeeds', async () => {
+    const { sut } = makeSut()
+    const account = await sut.findByToken('any_token', 'any_role')
+    expect(account).toEqual(mockAccountModel())
+  })
 })
