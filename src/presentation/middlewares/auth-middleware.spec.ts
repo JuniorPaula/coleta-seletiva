@@ -3,12 +3,19 @@ import { AccountModel } from '@/domain/model/account'
 import { AccessDeniedError } from '../errors'
 import { forbiden } from '../helpers/http-helpers'
 import { AuthMiddleware } from './auth-middleware'
+import { HttpRequest } from '../protocols'
 
 const mockAccountModel = (): AccountModel => ({
   id: 'valid_id',
   name: 'valid_name',
   email: 'valid_email',
   password: 'hashed_password'
+})
+
+const mockHttpRequest = (): HttpRequest => ({
+  headers: {
+    'x-access-token': 'any_token'
+  }
 })
 
 const mockFindAccountByToken = (): FindAccountByToken => {
@@ -45,11 +52,7 @@ describe('Auth Middleware', () => {
   test('Should call FindAccountByToken with correct accessToken', async () => {
     const { sut, findAccountByTokenStub } = makeSut()
     const findSpy = jest.spyOn(findAccountByTokenStub, 'findByToken')
-    await sut.handle({
-      headers: {
-        'x-access-token': 'any_token'
-      }
-    })
+    await sut.handle(mockHttpRequest())
     expect(findSpy).toHaveBeenCalledWith('any_token')
   })
 })
