@@ -70,4 +70,13 @@ describe('DbFindAccountByToken usecase', () => {
     await sut.findByToken('any_token', 'any_role')
     expect(findByTokenSpy).toHaveBeenCalledWith('any_token', 'any_role')
   })
+
+  test('Should returns null if FindAccountByTokenRepository returns null', async () => {
+    const { sut, findAccountByTokenRepositoryStub } = makeSut()
+    jest.spyOn(findAccountByTokenRepositoryStub, 'findByToken').mockReturnValueOnce(
+      Promise.resolve(null)
+    )
+    const account = await sut.findByToken('any_token', 'any_role')
+    expect(account).toBeNull()
+  })
 })
