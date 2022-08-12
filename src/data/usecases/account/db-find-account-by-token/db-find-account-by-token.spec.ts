@@ -1,5 +1,14 @@
+import { FindAccountByTokenRepository } from '@/data/protocols/account/find-account-by-token-repository'
 import { Decrypter } from '@/data/protocols/criptography/decrypter'
+import { AccountModel } from '@/domain/model/account'
 import { DbFindAccountByToken } from './db-find-account-by-token'
+
+const mockAccountModel = (): AccountModel => ({
+  id: 'valid_id',
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'encrypted_password'
+})
 
 const mockDecrypter = (): Decrypter => {
   class DecrypterStub implements Decrypter {
@@ -10,18 +19,31 @@ const mockDecrypter = (): Decrypter => {
   return new DecrypterStub()
 }
 
+const mockFindAccountByTokenRepository = (): FindAccountByTokenRepository => {
+  class FindAccountByTokenRepositoryStub implements FindAccountByTokenRepository {
+    async findByToken (token: string, role?: string): Promise<AccountModel> {
+      return await Promise.resolve(mockAccountModel())
+    }
+  }
+
+  return new FindAccountByTokenRepositoryStub()
+}
+
 type SutTypes = {
   sut: DbFindAccountByToken
   decrypterStub: Decrypter
+  findAccountByTokenRepositoryStub: FindAccountByTokenRepository
 }
 
 const makeSut = (): SutTypes => {
   const decrypterStub = mockDecrypter()
-  const sut = new DbFindAccountByToken(decrypterStub)
+  const findAccountByTokenRepositoryStub = mockFindAccountByTokenRepository()
+  const sut = new DbFindAccountByToken(decrypterStub, findAccountByTokenRepositoryStub)
 
   return {
     sut,
-    decrypterStub
+    decrypterStub,
+    findAccountByTokenRepositoryStub
   }
 }
 
@@ -40,5 +62,12 @@ describe('DbFindAccountByToken usecase', () => {
     )
     const account = await sut.findByToken('any_token', 'any_role')
     expect(account).toBeNull()
+  })
+
+  test('Should call FindAccountByTokenRepository with correct values', async () => {
+    const { sut, findAccountByTokenRepositoryStub } = makeSut()
+    const findByTokenSpy = jest.spyOn(findAccountByTokenRepositoryStub, 'findByToken')
+    await sut.findByToken('any_token', 'any_role')
+    expect(findByTokenSpy).toHaveBeenCalledWith('any_token', 'any_role')
   })
 })
