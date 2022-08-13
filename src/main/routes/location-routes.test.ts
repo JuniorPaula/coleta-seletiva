@@ -21,27 +21,29 @@ describe('Location Routes', () => {
     itemsColletiion = MongoHelper.getCollection('items')
     await itemsColletiion.deleteMany({})
   })
-  test('Should save a location on success', async () => {
-    const res = await itemsColletiion.insertOne({
-      title: 'any_title',
-      image: 'any_image'
-    })
-
-    const itemId = res.insertedId.toHexString()
-    await request(app)
-      .post('/api/v1/location')
-      .send({
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        latitude: 12345,
-        longitude: 54321,
-        city: 'any_city',
-        uf: 'any_uf',
-        items: [
-          { id: itemId }
-        ]
+  describe('POST /location', () => {
+    test('Should return 403 on add location whitout access token', async () => {
+      const res = await itemsColletiion.insertOne({
+        title: 'any_title',
+        image: 'any_image'
       })
-      .expect(204)
+
+      const itemId = res.insertedId.toHexString()
+      await request(app)
+        .post('/api/v1/location')
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          latitude: 12345,
+          longitude: 54321,
+          city: 'any_city',
+          uf: 'any_uf',
+          items: [
+            { id: itemId }
+          ]
+        })
+        .expect(403)
+    })
   })
 
   test('Should return a locations on success if no query is provided', async () => {
