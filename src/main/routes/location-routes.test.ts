@@ -174,7 +174,7 @@ describe('Location Routes', () => {
     })
   })
 
-  describe('', () => {
+  describe('GET /location/:locationId', () => {
     test('Should return 403 if find location by id without access token', async () => {
       const res = await locationCollection.insertOne(
         {
@@ -192,6 +192,43 @@ describe('Location Routes', () => {
       await request(app)
         .get(`/api/v1/location/${locationId}`)
         .expect(403)
+    })
+
+    test('Should return 200 if find location by id with valid access token is provided', async () => {
+      const resAccount = await accountCollection.insertOne({
+        name: 'Jane Doe',
+        email: 'jane.d@mail.com',
+        password: '1234',
+        role: 'admin'
+      })
+      const account = await accountCollection.findOne({ _id: resAccount.insertedId })
+      const id = account._id
+      const accessToken = sign({ id }, env.jwtSecret)
+      await accountCollection.updateOne({
+        _id: id
+      }, {
+        $set: {
+          access_token: accessToken
+        }
+      })
+
+      const res = await locationCollection.insertOne(
+        {
+          location: {
+            name: 'any_name',
+            email: 'any_email@mail.com',
+            latitude: 12345,
+            longitude: 54321,
+            city: 'any_city',
+            uf: 'any_uf'
+          },
+          items: [{ title: 'any_title' }]
+        })
+      const locationId = res.insertedId
+      await request(app)
+        .get(`/api/v1/location/${locationId}`)
+        .set('x-access-token', accessToken)
+        .expect(200)
     })
 
     test('Should return 403 if location router no found a location by id', async () => {
