@@ -13,10 +13,11 @@
 
 # API para cadastro de pontos de coleta de lixo seletivo
 
-**Aplicação está em desenvolvimento e conciste em cadastros de pontos**
-**de coleta seletiva de lixo**
+API foi **desenvolvida** ultilzando uma arquitetura bem definida e desacoplada, ultilizando **TDD** como metotologia de trabalho e **Clean Architecture** para fazer a distribição das resposabildades em camadas, e sempre que possível ultilizando os principios do **SOLID**.
 
-API está sendo desenvolvida ultilzando uma arquitetura bem definida e desacoplada, ultilizando **TDD** como metotologia de trabalho e **Clean Architecture** para fazer a distribição das resposabildades em camadas, e sempre que possível ultilizando os principios do **SOLID**.
+API conciste em um mapeamento onde estão situados **Pontos epecíficos** de coleta de lixo seletivo, onde os usuários podem está cadastrando esses pontos atravez de coordenadas de latitude e longitude do local. Além das localizações, os items que os pontos podem recolher/coletar so podem ser cadastrados via **Administrador do sistema**.
+
+A Aplicação está em constante desenvolvimento, cabendo sempre que possível novas funcionalidades.
 
 ### Instruções para rodar o projeto
 
@@ -43,15 +44,36 @@ Configurar as variáveis de ambiente criando um arquivo `.env` na raiz do projet
 
 ## Testes
 
+#### Rodar todos os testes
+
 ~~~javascript
 npm test
 ~~~
 
+#### Rodar testes de unidade
+
+~~~javascript
+npm run test:unit
+~~~
+
+#### Rodar testes de integração
+
+~~~javascript
+npm run test:integration
+~~~
+
+#### Rodar testes covarage
+
+~~~javascript
+npm run test:ci
+~~~
+
 ## Documentação
 **em desenvolvimento**
+
 ## Principais funcionalidades
-- Cadastro (**em desenvolvimento**)
-- Login (**em desenvolvimento**)
+- Cadastro
+- Login
 - Criar Itens
 - Listar Itens
 - Criar Localização
@@ -60,15 +82,79 @@ npm test
 ## Endpoints da aplicação
 
 ## Rota de Cadastro
-**em desenvolvimento**
+~~~javascript
+[POST] /api/v1/signup
+~~~
+
+## **Request body**
+~~~javascript
+{
+   "name": "string",
+   "email": "string",
+   "password": "string",
+   "passwordConfirmation": "string"
+}
+~~~
+
+## **Responses**
+![Generic badge](https://img.shields.io/badge/OK-200-<COLOR>.svg)
+
+~~~javascript
+{
+    "access_token": "string",
+    "name": "string"
+}
+~~~
+![Generic badge](https://img.shields.io/badge/bad%20request-400-red)
+
+~~~javascript
+{
+    "error": "string"
+}
+~~~
 
 ## Rota de Login
-**em desenvolvimento**
+~~~javascript
+[POST] /api/v1/login
+~~~
 
-## Rota de Criar Item
+## **Request body**
+~~~javascript
+{
+  "email": "string",
+  "password": "string"
+}
+~~~
+
+## **Responses**
+![Generic badge](https://img.shields.io/badge/OK-200-<COLOR>.svg)
+
+~~~javascript
+{
+    "access_token": "string",
+    "name": "string"
+}
+~~~
+![Generic badge](https://img.shields.io/badge/bad%20request-400-red)
+
+~~~javascript
+{
+    "error": "string"
+}
+~~~
+
+## Rota de Criar Item **private**
 
 ~~~javascript
 [POST] /api/v1/item
+~~~
+
+### **Parameters in header**
+
+~~~javascript
+{
+    "x-access-token": "string"
+}
 ~~~
 
 ## **Request body**
@@ -85,6 +171,7 @@ npm test
 
 ### **error**
 
+![Generic badge](https://img.shields.io/badge/Access%20denied-403-orange)
 ![Generic badge](https://img.shields.io/badge/Bad%20request-404-red)
 ![Generic badge](https://img.shields.io/badge/Internal%20Server%20Error-500-red)
 
@@ -94,10 +181,18 @@ npm test
 }
 ~~~
 
-## Rota de Listar Itens
+## Rota de Listar Itens **private**
 
 ~~~javascript
 [GET] /api/v1/item
+~~~
+
+### **Parameters in header**
+
+~~~javascript
+{
+    "x-access-token": "string"
+}
 ~~~
 
 ## **Responses**
@@ -116,6 +211,7 @@ npm test
 
 ### **error**
 
+![Generic badge](https://img.shields.io/badge/Access%20denied-403-orange)
 ![Generic badge](https://img.shields.io/badge/Bad%20request-404-red)
 ![Generic badge](https://img.shields.io/badge/Internal%20Server%20Error-500-red)
 
@@ -125,16 +221,24 @@ npm test
 }
 ~~~
 
-## Rota para criar Localização
+## Rota para criar Localização **private**
 
 ~~~javascript
 [POST] /api/v1/location
 ~~~
 
+### **Parameters in header**
+
+~~~javascript
+{
+    "x-access-token": "string"
+}
+~~~
+
 ## **Request body**
 ~~~javascript
 {
-  "name": "string",
+  	"name": "string",
 	"email": "string",
 	"latitude": number,
 	"longitude": number,
@@ -151,9 +255,26 @@ npm test
 ### **success**
 ![Generic badge](https://img.shields.io/badge/nocontent-204-green)
 
+~~~javascript
+{
+  "surveyId": "string",
+  "question": "string",
+  "answers": [
+    {
+      "image": "string",
+      "answer": "string",
+      "count": number,
+      "percent": number,
+      "isCurrentAccountAnswer": boolean
+    }
+  ],
+  "date": "string"
+}
+~~~
 
 ### **error**
 
+![Generic badge](https://img.shields.io/badge/Access%20denied-403-orange)
 ![Generic badge](https://img.shields.io/badge/Bad%20request-404-red)
 ![Generic badge](https://img.shields.io/badge/Internal%20Server%20Error-500-red)
 
@@ -168,7 +289,6 @@ npm test
 ~~~javascript
 [GET] /api/v1/location/{locationId}
 ~~~
-
 
 ## **Parameters in route**
 
