@@ -1,10 +1,13 @@
-import { Collection } from 'mongodb'
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import request from 'supertest'
+import { Collection } from 'mongodb'
+import { sign } from 'jsonwebtoken'
+import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from '../config/app'
+import env from '../config/env'
 
 let locationCollection: Collection
 let itemsColletiion: Collection
+let accountCollection: Collection
 
 describe('Location Routes', () => {
   beforeAll(async () => {
@@ -20,6 +23,8 @@ describe('Location Routes', () => {
     await locationCollection.deleteMany({})
     itemsColletiion = MongoHelper.getCollection('items')
     await itemsColletiion.deleteMany({})
+    accountCollection = MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
   describe('POST /location', () => {
     test('Should return 403 on add location whitout access token', async () => {
@@ -43,6 +48,47 @@ describe('Location Routes', () => {
           ]
         })
         .expect(403)
+    })
+
+    test('Should return 204 on add location with valid access token', async () => {
+      const resAccount = await accountCollection.insertOne({
+        name: 'Jane Doe',
+        email: 'jane.d@mail.com',
+        password: '1234',
+        role: 'admin'
+      })
+      const account = await accountCollection.findOne({ _id: resAccount.insertedId })
+      const id = account._id
+      const accessToken = sign({ id }, env.jwtSecret)
+      await accountCollection.updateOne({
+        _id: id
+      }, {
+        $set: {
+          access_token: accessToken
+        }
+      })
+
+      const res = await itemsColletiion.insertOne({
+        title: 'any_title',
+        image: 'any_image'
+      })
+
+      const itemId = res.insertedId.toHexString()
+      await request(app)
+        .post('/api/v1/location')
+        .set('x-access-token', accessToken)
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          latitude: 12345,
+          longitude: 54321,
+          city: 'any_city',
+          uf: 'any_uf',
+          items: [
+            { id: itemId }
+          ]
+        })
+        .expect(204)
     })
   })
 
