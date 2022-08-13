@@ -10,6 +10,7 @@ import {
 } from './login-protocols'
 import { HttpRequest } from '../item/item-protocols'
 import { LoginController } from './login'
+import { AuthenticationParams } from '@/domain/model/authentication-model'
 
 const mockHttpRequest = (): HttpRequest => ({
   body: {
@@ -20,8 +21,11 @@ const mockHttpRequest = (): HttpRequest => ({
 
 const mockAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
-      return await Promise.resolve('access_token')
+    async auth (authentication: AuthenticationModel): Promise<AuthenticationParams> {
+      return await Promise.resolve({
+        access_token: 'access_token',
+        name: 'any_name'
+      })
     }
   }
 
@@ -87,7 +91,10 @@ describe('LoginController', () => {
   test('Should return 200 if valid credentils are provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(mockHttpRequest())
-    expect(httpResponse).toEqual(ok({ access_token: 'access_token' }))
+    expect(httpResponse).toEqual(ok({
+      access_token: 'access_token',
+      name: 'any_name'
+    }))
   })
 
   test('Should call Validation with correct values', async () => {

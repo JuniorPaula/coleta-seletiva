@@ -4,6 +4,7 @@ import {
   MissingParamError, EmailAlreadyExists, serverError, forbiden
 } from './signup-protocols'
 import { SignupController } from './signup'
+import { AuthenticationParams } from '@/domain/model/authentication-model'
 
 const mockAccount = (): AccountModel => ({
   id: 'valid_id',
@@ -41,8 +42,11 @@ const mockValidation = (): Validation => {
 
 const mockAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
-      return await Promise.resolve('access_token')
+    async auth (authentication: AuthenticationModel): Promise<AuthenticationParams> {
+      return await Promise.resolve({
+        access_token: 'access_token',
+        name: 'any_name'
+      })
     }
   }
 
@@ -136,7 +140,10 @@ describe('Signup Controller', () => {
     }
     const httpResponse = await sut.handle(httpResquest)
     expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual({ access_token: 'access_token' })
+    expect(httpResponse.body).toEqual({
+      access_token: 'access_token',
+      name: 'any_name'
+    })
   })
 
   test('Should call Validation with correct values', async () => {
