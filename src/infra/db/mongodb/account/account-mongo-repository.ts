@@ -39,7 +39,11 @@ FindAccountByTokenRepository {
     const accountColletion = MongoHelper.getCollection('accounts')
     const accountModel = await accountColletion.findOne({
       access_token: token,
-      role
+      $or: [{
+        role
+      }, {
+        role: 'admin'
+      }]
     })
     return accountModel && MongoHelper.map(accountModel)
   }
