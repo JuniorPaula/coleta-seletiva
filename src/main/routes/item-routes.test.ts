@@ -74,5 +74,27 @@ describe('Item Routes', () => {
         })
         .expect(403)
     })
+
+    test('Should return 200 on find items with valid access token', async () => {
+      const res = await accountCollection.insertOne({
+        name: 'Jane Doe',
+        email: 'jane.d@mail.com',
+        password: '1234'
+      })
+      const account = await accountCollection.findOne({ _id: res.insertedId })
+      const id = account._id
+      const accessToken = sign({ id }, env.jwtSecret)
+      await accountCollection.updateOne({
+        _id: id
+      }, {
+        $set: {
+          access_token: accessToken
+        }
+      })
+      await request(app)
+        .get('/api/v1/item')
+        .set('x-access-token', accessToken)
+        .expect(200)
+    })
   })
 })
