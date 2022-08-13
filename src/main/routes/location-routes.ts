@@ -7,6 +7,6 @@ import { auth } from '../middlewares/auth'
 
 export default (router: Router): void => {
   router.post('/location', auth, adaptRoute(makeLocationController()))
-  router.get('/location', auth, adaptRoute(makeGetLocationController()))
-  router.get('/location/:locationId', auth, adaptRoute(makeLoadLocationByIdController()))
+  router.get('/location', adaptRoute(makeGetLocationController()))
+  router.get('/location/:locationId', adaptRoute(makeLoadLocationByIdController()))
 }
