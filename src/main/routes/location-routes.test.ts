@@ -174,41 +174,43 @@ describe('Location Routes', () => {
     })
   })
 
-  test('Should return a location by id', async () => {
-    const res = await locationCollection.insertOne(
-      {
-        location: {
-          name: 'any_name',
-          email: 'any_email@mail.com',
-          latitude: 12345,
-          longitude: 54321,
-          city: 'any_city',
-          uf: 'any_uf'
-        },
-        items: [{ title: 'any_title' }]
-      })
-    const locationId = res.insertedId
-    await request(app)
-      .get(`/api/v1/location/${locationId}`)
-      .expect(200)
-  })
+  describe('', () => {
+    test('Should return 403 if find location by id without access token', async () => {
+      const res = await locationCollection.insertOne(
+        {
+          location: {
+            name: 'any_name',
+            email: 'any_email@mail.com',
+            latitude: 12345,
+            longitude: 54321,
+            city: 'any_city',
+            uf: 'any_uf'
+          },
+          items: [{ title: 'any_title' }]
+        })
+      const locationId = res.insertedId
+      await request(app)
+        .get(`/api/v1/location/${locationId}`)
+        .expect(403)
+    })
 
-  test('Should return 403 if location router no found a location by id', async () => {
-    await locationCollection.insertOne(
-      {
-        location: {
-          name: 'any_name',
-          email: 'any_email@mail.com',
-          latitude: 12345,
-          longitude: 54321,
-          city: 'any_city',
-          uf: 'any_uf'
-        },
-        items: [{ title: 'any_title' }]
-      })
-    const locationId = '62d890fd7d71f725b4f4b842'
-    await request(app)
-      .get(`/api/v1/location/${locationId}`)
-      .expect(403)
+    test('Should return 403 if location router no found a location by id', async () => {
+      await locationCollection.insertOne(
+        {
+          location: {
+            name: 'any_name',
+            email: 'any_email@mail.com',
+            latitude: 12345,
+            longitude: 54321,
+            city: 'any_city',
+            uf: 'any_uf'
+          },
+          items: [{ title: 'any_title' }]
+        })
+      const locationId = '62d890fd7d71f725b4f4b842'
+      await request(app)
+        .get(`/api/v1/location/${locationId}`)
+        .expect(403)
+    })
   })
 })
