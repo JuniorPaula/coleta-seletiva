@@ -28,8 +28,8 @@ export class SignupController implements Controller {
       if (!account) {
         return forbiden(new EmailAlreadyExists())
       }
-      const accessToken = await this.authentication.auth({ email, password })
-      return ok({ access_token: accessToken })
+      const authenticationParams = await this.authentication.auth({ email, password })
+      return ok(authenticationParams)
     } catch (error) {
       return serverError()
     }
