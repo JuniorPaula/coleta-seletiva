@@ -92,35 +92,37 @@ describe('Location Routes', () => {
     })
   })
 
-  test('Should return a locations on success if no query is provided', async () => {
-    await locationCollection.insertMany([
-      {
-        location: {
-          name: 'any_name',
-          email: 'any_email@mail.com',
-          latitude: 12345,
-          longitude: 54321,
-          city: 'any_city',
-          uf: 'any_uf'
+  describe('GET /location', () => {
+    test('Should return 403 if find locations by query without access token', async () => {
+      await locationCollection.insertMany([
+        {
+          location: {
+            name: 'any_name',
+            email: 'any_email@mail.com',
+            latitude: 12345,
+            longitude: 54321,
+            city: 'any_city',
+            uf: 'any_uf'
+          },
+          items: [{ title: 'any_title' }]
         },
-        items: [{ title: 'any_title' }]
-      },
-      {
-        location: {
-          name: 'other_name',
-          email: 'other_email@mail.com',
-          latitude: 12345,
-          longitude: 54321,
-          city: 'other_city',
-          uf: 'other_uf'
-        },
-        items: [{ title: 'other_title' }]
-      }
-    ])
+        {
+          location: {
+            name: 'other_name',
+            email: 'other_email@mail.com',
+            latitude: 12345,
+            longitude: 54321,
+            city: 'other_city',
+            uf: 'other_uf'
+          },
+          items: [{ title: 'other_title' }]
+        }
+      ])
 
-    await request(app)
-      .get('/api/v1/location?city=any_city')
-      .expect(200)
+      await request(app)
+        .get('/api/v1/location?city=any_city')
+        .expect(403)
+    })
   })
 
   test('Should return a location by id', async () => {
