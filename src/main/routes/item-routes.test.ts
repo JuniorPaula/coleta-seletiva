@@ -18,13 +18,13 @@ describe('Item Routes', () => {
     itemColletion = MongoHelper.getCollection('items')
     await itemColletion.deleteMany({})
   })
-  test('Should save an item on success', async () => {
+  test('Should return 403 on add item whitout access token', async () => {
     await request(app)
       .post('/api/v1/item')
       .send({
         title: 'Oléo de cozinha',
         image: 'oleo.png'
       })
-      .expect(204)
+      .expect(403)
   })
 })
