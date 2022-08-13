@@ -1,6 +1,6 @@
 {
   "name": "coleta-seletiva",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "API Colela Seletiva de Lixo",
   "main": "index.js",
   "scripts": {
