@@ -6,6 +6,8 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "postbuild": "copyfiles -u 1 public/**/* dist/static",
+    "docker:up": "npm run build && docker-compose up -d",
+    "docker:down": "docker-compose down",
     "start": "node dist/main/server.js",
     "dev": "ts-node-dev --inspect --ignore-watch node_modules src/main/server.ts",
     "check": "npm-check -s -u",

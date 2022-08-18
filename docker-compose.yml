@@ -18,5 +18,7 @@ services:
       - ./dist:/usr/src/coleta-seletiva-api/dist
     ports:
       - '3035:3035'
+    env_file:
+      - .env
     links:
       - mongodb
