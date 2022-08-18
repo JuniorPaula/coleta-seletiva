@@ -5,13 +5,13 @@ services:
     image: mongo:4
     restart: always
     volumes:
-      - ./data:/data/db
+      - ./db:/data/db
     ports:
       - '27017:27017'
   api:
     container_name: api-coleta-seletiva
     build: .
-    image: app-coleta-seletiva
+    image: coleta-seletiva-api
     restart: always
     command: npm start
     volumes:
