@@ -9,6 +9,8 @@ import {
   forbiddenError
 } from './components'
 import { errorSchema } from './schemas/error-schema'
+import { signupPath } from './paths/signup-path'
+import { signupParamsSchema } from './schemas/signup-params-schema'
 
 export default {
   openapi: '3.0.0',
@@ -24,11 +26,13 @@ export default {
     name: 'Login'
   }],
   paths: {
-    '/login': loginPaths
+    '/login': loginPaths,
+    '/signup': signupPath
   },
   schemas: {
     account: accountSchema,
     loginParams: loginParamsSchema,
+    signup: signupParamsSchema,
     error: errorSchema
   },
   components: {
