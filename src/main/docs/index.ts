@@ -16,6 +16,9 @@ import { itemPath } from './paths/item-path'
 import { addItemSchema } from './schemas/add-item-schema'
 import { getItemsSchema } from './schemas/get-items-schema'
 import { itemsSchema } from './schemas/items-schema'
+import { LocationsPath } from './paths/location-path'
+import { getLocationsSchema } from './schemas/get-locations-schema'
+import { locationsSchema } from './schemas/locations-schema'
 
 export default {
   openapi: '3.0.0',
@@ -37,7 +40,8 @@ export default {
   paths: {
     '/login': loginPaths,
     '/signup': signupPath,
-    '/items': itemPath
+    '/items': itemPath,
+    '/location': LocationsPath
   },
   schemas: {
     account: accountSchema,
@@ -46,6 +50,8 @@ export default {
     addItem: addItemSchema,
     getItems: getItemsSchema,
     items: itemsSchema,
+    getLocation: getLocationsSchema,
+    locations: locationsSchema,
     error: errorSchema
   },
   components: {
