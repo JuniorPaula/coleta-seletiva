@@ -69,7 +69,7 @@ npm run test:ci
 ~~~
 
 ## Documentação
-**em desenvolvimento**
+A documentação foi desenvolvida utilizando o **Swagger**, e pode ser acessada através do endpoits `/documentation`
 
 ## Principais funcionalidades
 - Cadastro
