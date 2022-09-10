@@ -11,6 +11,11 @@ import {
 import { errorSchema } from './schemas/error-schema'
 import { signupPath } from './paths/signup-path'
 import { signupParamsSchema } from './schemas/signup-params-schema'
+import { apiKeyAuthSchema } from './schemas/api-key-auth-schema'
+import { itemPath } from './paths/item-path'
+import { addItemSchema } from './schemas/add-item-schema'
+import { getItemsSchema } from './schemas/get-items-schema'
+import { itemsSchema } from './schemas/items-schema'
 
 export default {
   openapi: '3.0.0',
@@ -22,20 +27,31 @@ export default {
   servers: [{
     url: '/api/v1'
   }],
-  tags: [{
-    name: 'Login'
-  }],
+  tags: [
+    {
+      name: 'Login'
+    }, {
+      name: 'Items'
+    }
+  ],
   paths: {
     '/login': loginPaths,
-    '/signup': signupPath
+    '/signup': signupPath,
+    '/items': itemPath
   },
   schemas: {
     account: accountSchema,
     loginParams: loginParamsSchema,
     signup: signupParamsSchema,
+    addItem: addItemSchema,
+    getItems: getItemsSchema,
+    items: itemsSchema,
     error: errorSchema
   },
   components: {
+    securitySchemes: {
+      apiKeyAuth: apiKeyAuthSchema
+    },
     badRequestError,
     unauthorizedError,
     serverError,
