@@ -19,6 +19,8 @@ import { itemsSchema } from './schemas/items-schema'
 import { LocationsPath } from './paths/location-path'
 import { getLocationsSchema } from './schemas/get-locations-schema'
 import { locationsSchema } from './schemas/locations-schema'
+import { locationIdPath } from './paths/location-id-path'
+import { locationQueryPath } from './paths/location-query-path'
 
 export default {
   openapi: '3.0.0',
@@ -35,13 +37,18 @@ export default {
       name: 'Login'
     }, {
       name: 'Items'
+    },
+    {
+      name: 'Locations'
     }
   ],
   paths: {
     '/login': loginPaths,
     '/signup': signupPath,
     '/items': itemPath,
-    '/location': LocationsPath
+    '/location': LocationsPath,
+    '/location?city={city}&uf={uf}': locationQueryPath,
+    '/location/{locationId}': locationIdPath
   },
   schemas: {
     account: accountSchema,
@@ -52,6 +59,7 @@ export default {
     items: itemsSchema,
     getLocation: getLocationsSchema,
     locations: locationsSchema,
+    locationsSchema: locationsSchema,
     error: errorSchema
   },
   components: {
