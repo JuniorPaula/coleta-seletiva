@@ -21,6 +21,7 @@ import { getLocationsSchema } from './schemas/get-locations-schema'
 import { locationsSchema } from './schemas/locations-schema'
 import { locationIdPath } from './paths/location-id-path'
 import { locationQueryPath } from './paths/location-query-path'
+import { addLocationSchema } from './schemas/add-location-schema'
 
 export default {
   openapi: '3.0.0',
@@ -60,6 +61,7 @@ export default {
     getLocation: getLocationsSchema,
     locations: locationsSchema,
     locationsSchema: locationsSchema,
+    addLocation: addLocationSchema,
     error: errorSchema
   },
   components: {
